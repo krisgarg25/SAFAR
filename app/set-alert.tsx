@@ -119,12 +119,14 @@ export default function SetAlertScreen() {
     return (
         <View className="flex-1 bg-bg_gray">
             {/* Header */}
-            <SafeAreaView className="bg-bg_gray px-4 pt-2 pb-3 border-b border-orange_4bor">
+            <SafeAreaView className="bg-bg_gray px-4 pt-2 pb-3">
                 <View className="flex-row items-center justify-between h-11">
-                    <TouchableOpacity onPress={() => router.back()}>
-                        <Image source={require('@/images/back.png')} className="h-10 w-10" />
+                    <TouchableOpacity
+                        onPress={() => router.back()}
+                    >
+                        <Image source={require('@/images/back.png')} className="h-9 w-9" />
                     </TouchableOpacity>
-                    <Text className="text-xl font-bold text-white text-center tracking-wide">
+                    <Text className="text-xl font-bold text-white text-center">
                         Set Alert
                     </Text>
                     <View className="w-11 h-11" />
@@ -132,7 +134,7 @@ export default function SetAlertScreen() {
             </SafeAreaView>
 
             {/* Content */}
-            <ScrollView className="flex-1 px-3 pt-2">
+            <ScrollView className="flex-1 px-3 pt-2" showsVerticalScrollIndicator={false}>
                 {/* Bus Number */}
                 <Text className="text-white font-medium mb-1">Bus Number</Text>
                 <DropdownButton
@@ -166,34 +168,49 @@ export default function SetAlertScreen() {
                 />
 
                 {/* Toggles */}
-                <View className="bg-white rounded-lg px-3">
-                    <View className="flex-row items-center justify-between">
-                        <Text className="text-gray-800 font-medium">Enable Mobile Alert</Text>
-                        <Switch
-                            value={enableAlert}
-                            onValueChange={setEnableAlert}
-                            trackColor={{ false: '#D1D5DB', true: '#EF6820' }}
-                            thumbColor={enableAlert ? '#FFFFFF' : '#F3F4F6'}
-                        />
+                <View className="bg-card rounded-2xl p-5 mt-2 border border-card_bor">
+                    <Text className="text-white font-bold text-lg mb-5">Alert Preferences</Text>
+
+                    <View className="mb-2">
+                        <View className="flex-row items-center justify-between">
+                            <View className="flex-1 mr-4">
+                                <Text className="text-white font-semibold text-base">Mobile Notification</Text>
+                                <Text className="text-gray-400 text-sm mt-1">Get instant push notifications</Text>
+                            </View>
+                            <Switch
+                                value={enableAlert}
+                                onValueChange={setEnableAlert}
+                                trackColor={{ false: '#374151', true: '#EF6820' }}
+                                thumbColor={enableAlert ? '#FFFFFF' : '#9CA3AF'}
+                                ios_backgroundColor="#374151"
+                                style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
+                            />
+                        </View>
                     </View>
 
-                    <View className="flex-row items-center justify-between">
-                        <Text className="text-gray-800 font-medium">Receive Alert via SMS</Text>
-                        <Switch
-                            value={receiveSMS}
-                            onValueChange={setReceiveSMS}
-                            trackColor={{ false: '#D1D5DB', true: '#EF6820' }}
-                            thumbColor={receiveSMS ? '#FFFFFF' : '#F3F4F6'}
-                        />
+                    <View className="pt-2 border-t border-gray-700/40">
+                        <View className="flex-row items-center justify-between">
+                            <View className="flex-1 mr-4">
+                                <Text className="text-white font-semibold text-base">SMS Alert</Text>
+                                <Text className="text-gray-400 text-sm mt-1">Receive text message alerts</Text>
+                            </View>
+                            <Switch
+                                value={receiveSMS}
+                                onValueChange={setReceiveSMS}
+                                trackColor={{ false: '#374151', true: '#EF6820' }}
+                                thumbColor={receiveSMS ? '#FFFFFF' : '#9CA3AF'}
+                                ios_backgroundColor="#374151"
+                                style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
+                            />
+                        </View>
                     </View>
                 </View>
             </ScrollView>
-
             {/* Fixed Set Alert Button */}
-            <View className="absolute bottom-0 left-0 right-0 bg-bg_gray px-4 pt-4 pb-8 border-t border-gray-700">
+            <View className="absolute bottom-0 left-0 right-0 bg-bg_gray px-4 pt-4 pb-8">
                 <TouchableOpacity
                     onPress={handleSetAlert}
-                    className="bg-orange-500 rounded-xl py-4 items-center"
+                    className="bg-accent rounded-xl py-4 items-center"
                     style={{ backgroundColor: '#EF6820' }}
                 >
                     <Text className="text-white font-bold text-lg">Set Alert</Text>
@@ -208,22 +225,26 @@ export default function SetAlertScreen() {
                 onRequestClose={closeDropdown}
             >
                 <View className="flex-1 bg-black/50 justify-center px-4">
-                    <View className="bg-bg_gray rounded-xl max-h-96 border-2 border-gray-600">
+                    <View className="bg-bg_gray rounded-xl max-h-96 border border-card_bor">
                         {/* Modal Header */}
-                        <View className="flex-row items-center justify-between p-4 border-b-2 border-gray-600">
-                            <Text className="text-white font-semibold text-lg">{dropdownTitle}</Text>
+                        <View className="flex-row items-center justify-between p-4 border-b border-card_bor">
+                            <View className="w-6 h-6" />
+                            <Text className="text-white font-semibold text-lg mr-4">{dropdownTitle}</Text>
                             <TouchableOpacity onPress={closeDropdown}>
-                                <Ionicons name="close" size={24} color="#9CA3AF" />
+                                <Image source={require('../images/close.png')} className="h-4 w-4 mr-2" />
                             </TouchableOpacity>
                         </View>
 
+
+
                         {/* Modal Content */}
-                        <ScrollView className="max-h-80">
+                        <ScrollView className="max-h-80" showsVerticalScrollIndicator={true}>
                             {dropdownData.map((item, index) => (
                                 <TouchableOpacity
                                     key={index}
                                     onPress={() => selectItem(item)}
-                                    className="p-4 border-b border-gray-700/50 active:bg-orange_4bor"
+                                    className="p-4 border-b border-gray-700 active:bg-gray-700"
+                                    activeOpacity={0.8}
                                 >
                                     <Text className="text-white text-base">{item}</Text>
                                 </TouchableOpacity>
@@ -233,5 +254,9 @@ export default function SetAlertScreen() {
                 </View>
             </Modal>
         </View>
+
+
+
+
     );
 }

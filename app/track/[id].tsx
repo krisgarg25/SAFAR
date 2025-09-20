@@ -1,30 +1,14 @@
-// app/track/[id].tsx
 import React, { useEffect, useState, useRef } from 'react';
 import {View, Text, ScrollView, ActivityIndicator, Image, StyleSheet} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE, Callout } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
 import { getBusById } from '@/utils/busData';
 
 // Fixed styles - REMOVED zIndex to prevent insert view error
 const markerStyles = StyleSheet.create({
-    busMarkerContainer: {
-        width: 35,
-        height: 35,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 25,
-        borderWidth: 2,
-        borderColor: '#EF6820',
-        shadowColor: '#EF6820',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 4,
-        elevation: 8,
-    },
         stopMarkerCompleted: {
             width: 28,
             height: 30,
@@ -56,56 +40,6 @@ const markerStyles = StyleSheet.create({
             shadowRadius: 2,
             elevation: 2,
         },
-        // Fixed callout container with proper sizing
-        calloutContainer: {
-            backgroundColor: 'white',
-            padding: 12,
-            borderRadius: 8,
-            minWidth: 140,
-            maxWidth: 200,
-            minHeight: 60,
-            alignItems: 'center',
-            justifyContent: 'center',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
-        },
-        calloutText: {
-            fontSize: 13,
-            fontWeight: '600',
-            textAlign: 'center',
-            color: '#1F2937',
-        },
-});
-
-// Smooth layout styles with fixed floating button alignment
-const layoutStyles = StyleSheet.create({
-    mapContainer: {
-        flex: 1,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-        overflow: 'hidden',
-        marginBottom: 10,
-    },
-    floatingButton: {
-        position: 'absolute',
-        bottom: 30, // Adjusted for better alignment
-        right: 20,
-        backgroundColor: '#EF6820',
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: '#EF6820',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 8,
-        elevation: 8,
-        zIndex: 1000,
-    },
 });
 
 // Define interfaces
@@ -250,7 +184,8 @@ const TrackBus = () => {
             </View>
 
             {/* Smooth Map Container */}
-            <View style={[layoutStyles.mapContainer, { height: '65%' }]}>
+            <View  className="flex-1 rounded-bl-[20px] rounded-br-[20px] overflow-hidden mb-[10px]"
+                   style={{ height: '65%' }}>
                 <MapView
                     ref={mapRef} // Add ref for reload functionality
                     provider={PROVIDER_GOOGLE}
@@ -270,6 +205,8 @@ const TrackBus = () => {
                             key={`stop-${index}`}
                             coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
                             anchor={{ x: 0.6, y: 0.6 }}
+                            title={stop.name}
+                            description="Live Location"
                         >
                             <View style={stop.completed ? markerStyles.stopMarkerCompleted : markerStyles.stopMarkerIncomplete}>
                                 <Image
@@ -280,21 +217,6 @@ const TrackBus = () => {
                                     className="h-7 w-7"
                                 />
                             </View>
-                            <Callout>
-                                <View style={markerStyles.calloutContainer}>
-                                    <Text style={[markerStyles.calloutText, {
-                                        color: stop.completed ? '#10B981' : '#6B7280'
-                                    }]}>
-                                        {stop.name.replace('Bus Stand', '').replace('Stand', '').trim()}
-                                    </Text>
-                                    <Text style={[markerStyles.calloutText, {
-                                        fontSize: 10,
-                                        color: stop.completed ? '#10B981' : '#6B7280'
-                                    }]}>
-                                        {stop.completed ? 'Completed' : 'Upcoming'}
-                                    </Text>
-                                </View>
-                            </Callout>
                         </Marker>
                     ))}
 
@@ -309,7 +231,14 @@ const TrackBus = () => {
                         description="Live Location"
                         anchor={{ x: 0.5, y: 1.2 }}
                     >
-                        <View style={markerStyles.busMarkerContainer}>
+                        <View className="w-[35px] h-[35px] justify-center items-center bg-white rounded-[25px] border-2 border-[#EF6820]"
+                              style={{
+                                  shadowColor: '#EF6820',
+                                  shadowOffset: { width: 0, height: 2 },
+                                  shadowOpacity: 0.8,
+                                  shadowRadius: 4,
+                                  elevation: 8,
+                              }}>
                             <Image source={require('../../images/bus_loc.png')} className="h-7 w-7"  />
                         </View>
                     </Marker>
@@ -332,7 +261,14 @@ const TrackBus = () => {
 
                 {/* Fixed Floating Action Button with Reload Functionality */}
                 <TouchableOpacity
-                    style={layoutStyles.floatingButton}
+                    className="absolute bottom-[30px] left-[20px] bg-[#EF6820] w-[56px] h-[56px] rounded-[28px] justify-center items-center z-[1000]"
+                    style={{
+                        shadowColor: '#EF6820',
+                        shadowOffset: { width: 0, height: 4 },
+                        shadowOpacity: 0.4,
+                        shadowRadius: 8,
+                        elevation: 8,
+                    }}
                     activeOpacity={0.8}
                     onPress={reloadMap} // Use reload function
                 >

@@ -10,8 +10,10 @@ module.exports = {
 
             },
             colors :{
-                bg_gray: '#2D2E2F',
+                bg_gray: '#1a202c',
                 accent: '#EF6820',
+                card: 'rgba(31 41 55 / 0.9)',
+                card_bor: 'rgba(55 65 81 / 0.3)',
                 white35_4bor: 'rgba(255, 255, 255, 0.35)',
                 white60_4txt: 'rgba(255, 255, 255, 0.60)',
                 white90_4txt: 'rgba(255, 255, 255, 0.90)',

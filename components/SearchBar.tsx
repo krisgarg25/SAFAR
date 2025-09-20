@@ -12,7 +12,6 @@ const SearchBar = ({placeholder,onPress} : Props ) => {
             <Image source={require('../images/searchbar.png')} className="h-[24px] w-[24px]" />
             <TextInput
                 onPress={onPress}
-
                 placeholder={placeholder}
                 placeholderTextColor="rgba(255, 255, 255, 0.6)"
                 className="text-white text-base ml-2 mt-0.5 h-10"

@@ -84,17 +84,18 @@ const BusAlertCard: React.FC<BusAlertCardProps> = ({
     };
 
     return (
-        <View className="bg-bg_gray rounded-2xl mx-4 mb-4 border border-white90_4txt overflow-hidden"
-              style={{
-                  shadowColor: '#EFs6820',
-                  shadowOffset: {
-                      width: 0,
-                      height: 2,
-                  },
-                  shadowOpacity: 1,
-                  shadowRadius: 10,
-                  elevation: 8,
-              }}>
+        <View className="bg-card rounded-2xl mx-4 mb-4 border-2 border-card_bor overflow-hidden"
+              // style={{
+              //     shadowColor: '#EF6820',
+              //     shadowOffset: {
+              //         width: 8,
+              //         height: 2,
+              //     },
+              //     shadowOpacity: 1,
+              //     shadowRadius: 8,
+              //     elevation: 8,
+              // }}
+            >
             {/* Header Section */}
             <View className="px-5 pt-2 border-b border-white35_4bor">
                 <View className="flex-row items-center justify-between">

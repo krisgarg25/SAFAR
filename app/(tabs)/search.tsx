@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native';
+import {Text, View, FlatList, Image} from 'react-native';
 import * as Location from 'expo-location';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -9,6 +9,7 @@ import { getBusData } from '@/utils/busData';
 import { Ionicons } from '@expo/vector-icons';
 import SearchBar from "@/components/SearchBar";
 import {useRouter} from "expo-router";
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function search() {
     const { userLatitude, userLongitude, setUserLocation } = useLocationStore();
@@ -95,11 +96,12 @@ export default function search() {
             {/* Nearby Buses Section - Larger 60% */}
             <View className="flex-1">
                 {/* Section Header with Better Design */}
-                <View className="px-4 py-4 bg-gray-800 border-b border-gray-700">
+                <View className="px-4 py-4 bg-gradient-to-r from-white to-black  border-b border-gray-700">
                     <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center">
-                            <View className="w-8 h-8 bg-orange-500/20 rounded-lg items-center justify-center mr-3">
-                                <Ionicons name="bus" size={16} color="#EF6820" />
+                            <View className="w-8 h-8 items-center justify-center mr-3">
+                                {/*<Ionicons name="bus" size={16} color="#EF6820" />*/}
+                                <Image source={require('../../images/view_buses.png')} className="h-[24px] w-[24px]" />
                             </View>
                             <View>
                                 <Text className="text-white text-lg font-bold">Nearby Buses</Text>
@@ -121,7 +123,7 @@ export default function search() {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         paddingTop: 12,
-                        paddingBottom: 24
+                        paddingBottom: 90
                     }}
                     ListEmptyComponent={() => (
                         <View className="flex-1 justify-center items-center py-12">

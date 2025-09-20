@@ -38,6 +38,7 @@
     "react-native": "0.81.4",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-heroicons": "^4.0.0",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-maps": "1.20.1",
     "react-native-maps-directions": "^1.9.0",
     "react-native-reanimated": "~4.1.0",
