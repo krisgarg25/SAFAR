@@ -1,0 +1,141 @@
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+import * as Location from 'expo-location';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView} from "react-native-safe-area-context";
+import {useLocationStore} from "@/store";
+import Map from "@/components/Map";
+import BusCard from "@/components/businfo";
+import { getBusData } from '@/utils/busData';
+import { Ionicons } from '@expo/vector-icons';
+import SearchBar from "@/components/SearchBar";
+import {useRouter} from "expo-router";
+
+export default function search() {
+    const { userLatitude, userLongitude, setUserLocation } = useLocationStore();
+    const [loading, setLoading] = useState(true);
+    const buses = getBusData();
+    const router = useRouter();
+
+    useEffect(() => {
+        const getLocation = async () => {
+            try {
+                let { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                    console.log('Permission denied');
+                    setLoading(false);
+                    return;
+                }
+
+                let location = await Location.getCurrentPositionAsync({});
+
+                const address = await Location.reverseGeocodeAsync({
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                });
+
+                setUserLocation({
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                    address: `${address[0]?.name || ''}, ${address[0]?.region || ''}`,
+                });
+
+                setLoading(false);
+            } catch (error) {
+                console.log('Location error:', error);
+                setLoading(false);
+            }
+        };
+
+        getLocation();
+    }, [setUserLocation]);
+
+    const renderBusCard = ({ item: bus }) => (
+        <BusCard
+            routeName={bus.routeName}
+            busNumber={bus.busNumber}
+            occupancy={bus.occupancy}
+            startLocation={bus.startLocation}
+            endLocation={bus.endLocation}
+            startTime={bus.startTime}
+            endTime={bus.endTime}
+            busType={bus.busType}
+            fare={bus.fare}
+            eta={bus.eta}
+            isLive={true}
+        />
+    );
+
+    if (loading) {
+        return (
+            <SafeAreaView className="flex-1 bg-bg_gray justify-center items-center">
+                <Text className="text-white">Getting location...</Text>
+            </SafeAreaView>
+        );
+    }
+
+    if (!userLatitude || !userLongitude) {
+        return (
+            <SafeAreaView className="flex-1 bg-bg_gray justify-center items-center">
+                <Text className="text-white">Location not available</Text>
+            </SafeAreaView>
+        );
+    }
+
+    return (
+        <SafeAreaView className="flex-1 bg-bg_gray pt-2">
+            <SearchBar
+                placeholder="Search for destination..."
+                onPress={() => router.push('/search_buses')}
+            />
+            {/* Map Section - Smaller 40% */}
+            <View style={{ height: '40%' }} className="border-b border-gray-700 pt-4">
+                <Map />
+            </View>
+
+            {/* Nearby Buses Section - Larger 60% */}
+            <View className="flex-1">
+                {/* Section Header with Better Design */}
+                <View className="px-4 py-4 bg-gray-800 border-b border-gray-700">
+                    <View className="flex-row items-center justify-between">
+                        <View className="flex-row items-center">
+                            <View className="w-8 h-8 bg-orange-500/20 rounded-lg items-center justify-center mr-3">
+                                <Ionicons name="bus" size={16} color="#EF6820" />
+                            </View>
+                            <View>
+                                <Text className="text-white text-lg font-bold">Nearby Buses</Text>
+                            </View>
+                        </View>
+                        <View className="bg-orange-500/20 px-4 py-2 rounded-full">
+                            <Text className="text-orange-400 text-s font-bold">
+                                {buses?.length || 0}
+                            </Text>
+                        </View>
+                    </View>
+                </View>
+
+                {/* Bus List with Better Spacing */}
+                <FlatList
+                    data={buses}
+                    keyExtractor={(item) => item.id}
+                    renderItem={renderBusCard}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingTop: 12,
+                        paddingBottom: 24
+                    }}
+                    ListEmptyComponent={() => (
+                        <View className="flex-1 justify-center items-center py-12">
+                            <View className="w-16 h-16 bg-gray-700/50 rounded-full items-center justify-center mb-4">
+                                <Ionicons name="bus-outline" size={32} color="#6B7280" />
+                            </View>
+                            <Text className="text-gray-400 text-lg font-semibold mb-2">No buses nearby</Text>
+                            <Text className="text-gray-500 text-sm text-center px-8">
+                                We'll show buses as they become available in your area
+                            </Text>
+                        </View>
+                    )}
+                />
+            </View>
+        </SafeAreaView>
+    );
+}
