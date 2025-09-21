@@ -80,7 +80,7 @@ export default function SearchBus() {
             </View>
             {/* Start Input */}
             <View className="mb-3">
-                <Text className="text-gray-400 mb-1">Start Position</Text>
+                <Text className="text-gray-400 mb-1">sex sux</Text>
                 <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',
