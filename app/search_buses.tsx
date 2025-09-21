@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from 'react';
-import {View, TextInput, FlatList, Text, TouchableOpacity, Keyboard, Image } from 'react-native';
+import BusCard from '@/components/businfo';
+import { getBusData } from '@/utils/busData';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { getBusData } from '@/utils/busData';
-import BusCard from '@/components/businfo';
-import {SafeAreaView} from "react-native-safe-area-context";
+import React, { useMemo, useState } from 'react';
+import { FlatList, Image, Keyboard, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SearchBus() {
     const router = useRouter();
@@ -80,7 +80,7 @@ export default function SearchBus() {
             </View>
             {/* Start Input */}
             <View className="mb-3">
-                <Text className="text-gray-400 mb-1">sex sux</Text>
+                <Text className="text-gray-400 mb-1">start location</Text>
                 <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',
