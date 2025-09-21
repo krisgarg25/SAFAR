@@ -1,7 +1,6 @@
 import { Tabs } from "expo-router";
 import React from 'react';
 import {Image, ImageBackground, Text, TouchableWithoutFeedback, View} from 'react-native';
-import {black} from "nativewind/src/metro/picocolors";
 import { Pressable } from 'react-native';
 
 
@@ -66,7 +65,7 @@ const _layout = () => {
               overflow:'hidden',
           }
       }}>
-          <Tabs.Screen name="index"
+          <Tabs.Screen name="Home"
                        options={{ title: "Your Bus",
                            headerShown: false,
                            tabBarButton

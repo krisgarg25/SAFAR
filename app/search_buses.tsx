@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {View, TextInput, FlatList, Text, TouchableOpacity, Keyboard, Image } from 'react-native';
+import { SafeAreaView, View, TextInput, FlatList, Text, TouchableOpacity, Keyboard, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { getBusData } from '@/utils/busData';
