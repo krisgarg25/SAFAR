@@ -3,7 +3,7 @@ import { getBusData } from '@/utils/busData';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
-import { FlatList, Image, Keyboard, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SearchBus() {
@@ -63,159 +63,181 @@ export default function SearchBus() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-bg_gray px-4 pt-4">
-            <View className="flex-row items-center justify-between px-4 py-4 border-b border-orange_4bor">
+        <SafeAreaView className="flex-1 bg-bg_gray px-6 pt-2">
+            {/* Header */}
+            <View className="flex-row items-center justify-between mb-5">
                 <TouchableOpacity
                     onPress={() => router.back()}
                     className="justify-center items-center"
                     activeOpacity={0.7}
                 >
-                    <Image source={require('@/images/back.png')} className="h-10 w-10" />
+                    <Image source={require('@/images/back.png')} className="h-7 w-7" />
                 </TouchableOpacity>
                 <View className="flex-1 items-center justify-center">
-                    <Text className="text-white font-bold text-lg">Track Bus</Text>
-                    <Text className="text-accent text-sm">{`${start} → ${destination}`}</Text>
+                    <Text className="text-cyan_4txt font-semibold text-lg">Select Route</Text>
                 </View>
-                <View className="px-4 ml-3 pl-2">{/* Empty right placeholder */}</View>
+                <View className="w-6">{/* Empty right placeholder */}</View>
             </View>
-            {/* Start Input */}
-            <View className="mb-3">
-                <Text className="text-gray-400 mb-1">sex suxx</Text>
-                <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: '#23272e',
-                    borderRadius: 12,
-                    paddingVertical: 2,
-                    paddingHorizontal: 10,
-                    borderWidth: 1,
-                    borderColor: start ? '#EF6820' : '#343A46',
-                }}>
-                    <Ionicons name="navigate" size={18} color="#EF6820" />
-                    <TextInput
-                        value={start}
-                        onChangeText={text => {
-                            setStart(text);
-                            setEditing('start');
-                        }}
-                        placeholder="Type starting location..."
-                        placeholderTextColor="#8B949E"
-                        className="flex-1 ml-2 text-white text-base"
-                        style={{ height: 44 }}
-                        autoCapitalize="words"
-                        clearButtonMode="while-editing"
-                        onFocus={() => setEditing('start')}
-                    />
+
+            {/* Route Visualization Card */}
+            <View className="bg-card rounded-2xl border-2 border-card_bor p-6 mb-6" style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.05,
+                shadowRadius: 8,
+                elevation: 3,
+            }}>
+                {/* Current Location */}
+                <View className="flex-row items-center">
+                    <View className="w-5 h-5 bg-green-500 rounded-full items-center justify-center mr-4">
+                        <View className="w-2 h-2 bg-white rounded-full" />
+                    </View>
+                    <View className="flex-1">
+                        <Text className="text-white text-sm font-medium">Current Location</Text>
+                        <TextInput
+                            value={start}
+                            onChangeText={text => {
+                                setStart(text);
+                                setEditing('start');
+                            }}
+                            placeholder="Your current location"
+                            placeholderTextColor="#9CA3AF"
+                            className="text-white text-base font-medium"
+                            style={{
+                                borderBottomWidth: start ? 0 : 1,
+                                borderColor: '#E5E7EB',
+                                paddingVertical: 4,
+                            }}
+                            autoCapitalize="words"
+                            onFocus={() => setEditing('start')}
+                            onBlur={() => {
+                                // Keep dropdown open briefly for selection
+                                setTimeout(() => setEditing(null), 150);
+                            }}
+                        />
+                    </View>
                 </View>
-                {editing === 'start' && filteredSuggestions.length > 0 && (
-                    <View style={{
-                        position: 'absolute',
-                        top: 54,
-                        left: 0, right: 0,
-                        backgroundColor: '#23272e',
-                        borderRadius: 10,
-                        zIndex: 10,
-                        elevation: 20,
-                    }}>
-                        {filteredSuggestions.map(suggestion => (
-                            <TouchableOpacity
-                                key={suggestion}
-                                onPress={() => applySuggestion(suggestion)}
-                                style={{
-                                    padding: 14,
-                                    borderBottomWidth: 1,
-                                    borderColor: '#343A46',
-                                }}
-                            >
-                                <Text style={{ color: '#fff' }}>{suggestion}</Text>
-                            </TouchableOpacity>
-                        ))}
+
+                {/* Connecting Line */}
+                <View className="ml-2 mb-3 items-start">
+                    {Array.from({length: 4}).map((_, index) => (
+                        <View
+                            key={index}
+                            style={{
+                                width: 2,
+                                height: 2,
+                                backgroundColor: '#FFFFFF',
+                                borderRadius: 1,
+                                marginVertical: 4,
+                                opacity: 0.6,
+                            }}
+                        />
+                    ))}
+                </View>
+                {/* Destination */}
+                <View className="flex-row items-center mb-2">
+                    <View className="w-5 h-5 bg-orange-500 rounded-full items-center justify-center mr-4">
+                        <View className="w-2 h-2 bg-white rounded-full" />
+                    </View>
+                    <View className="flex-1">
+                        <Text className="text-white text-sm font-medium ">Drop Location</Text>
+                        <TextInput
+                            value={destination}
+                            onChangeText={text => {
+                                setDestination(text);
+                                setEditing('end');
+                            }}
+                            placeholder="Where to?"
+                            placeholderTextColor="#9CA3AF"
+                            className="text-white text-base font-medium"
+                            style={{
+                                borderBottomWidth: destination ? 0 : 1,
+                                borderColor: '#E5E7EB',
+                                paddingVertical: 4,
+                            }}
+                            autoCapitalize="words"
+                            onFocus={() => setEditing('end')}
+                            onBlur={() => {
+                                // Keep dropdown open briefly for selection
+                                setTimeout(() => setEditing(null), 150);
+                            }}
+                        />
+                    </View>
+                </View>
+
+                {/* Suggestions Dropdown */}
+                {editing && filteredSuggestions.length > 0 && (
+                    <View
+                        className="absolute bg-card rounded-xl border border-cyan_4bor max-h-[180px] shadow-lg"
+                        style={{
+                            top: editing === 'start' ? 85 : 165,
+                            left: 24,
+                            right: 24,
+                            zIndex: 1000,
+                        }}
+                    >
+
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            keyboardShouldPersistTaps="handled"
+                        >
+                            {filteredSuggestions.map((suggestion, index) => (
+                                <TouchableOpacity
+                                    key={suggestion}
+                                    onPress={() => applySuggestion(suggestion)}
+                                    style={{
+                                        padding: 16,
+                                        borderBottomWidth: index < filteredSuggestions.length - 1 ? 1 : 0,
+                                        borderColor: '#F3F4F6',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
+                                    activeOpacity={0.7}
+                                >
+                                    <Ionicons
+                                        name="location-outline"
+                                        size={16}
+                                        color="#9CA3AF"
+                                        style={{ marginRight: 12 }}
+                                    />
+                                    <Text className="text-white text-base flex-1">{suggestion}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
                     </View>
                 )}
             </View>
 
-            {/* Destination Input */}
-            <View className="mb-3">
-                <Text className="text-gray-400 mb-1">Destination</Text>
-                <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: '#23272e',
-                    borderRadius: 12,
-                    paddingVertical: 2,
-                    paddingHorizontal: 10,
-                    borderWidth: 1,
-                    borderColor: destination ? '#EF6820' : '#343A46',
-                }}>
-                    <Ionicons name="location" size={19} color="#EF6820" />
-                    <TextInput
-                        value={destination}
-                        onChangeText={text => {
-                            setDestination(text);
-                            setEditing('end');
-                        }}
-                        placeholder="Type destination..."
-                        placeholderTextColor="#8B949E"
-                        className="flex-1 ml-2 text-white text-base"
-                        style={{ height: 44 }}
-                        autoCapitalize="words"
-                        clearButtonMode="while-editing"
-                        onFocus={() => setEditing('end')}
-                    />
-                </View>
-                {editing === 'end' && filteredSuggestions.length > 0 && (
-                    <View style={{
-                        position: 'absolute',
-                        top: 54,
-                        left: 0, right: 0,
-                        backgroundColor: '#23272e',
-                        borderRadius: 10,
-                        zIndex: 10,
-                        elevation: 20,
-                    }}>
-                        {filteredSuggestions.map(suggestion => (
-                            <TouchableOpacity
-                                key={suggestion}
-                                onPress={() => applySuggestion(suggestion)}
-                                style={{
-                                    padding: 14,
-                                    borderBottomWidth: 1,
-                                    borderColor: '#343A46',
-                                }}
-                            >
-                                <Text style={{ color: '#fff' }}>{suggestion}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
-            </View>
-
-            {/* Divider */}
-            <View style={{ height: 2, backgroundColor: '#2e2e2e', marginVertical: 6, borderRadius: 999 }} />
-
-            {/* Results */}
+            {/* Results Section */}
             {!start || !destination ? (
-                <View className="flex-1 justify-center items-center px-6">
-                    <Ionicons name="search-outline" size={48} color="#6B7280" />
-                    <Text className="text-gray-400 mt-4 text-lg text-center">
-                        Enter a start and destination to see available buses.
+                <View className="flex-1 justify-center items-center">
+                    <View className="w-16 h-16 bg-gray-100 rounded-full items-center justify-center mb-4">
+                        <Ionicons name="location-outline" size={32} color="#9CA3AF" />
+                    </View>
+                    <Text className="text-white text-base text-center">
+                        Select your pickup and drop locations{'\n'}to find available buses
                     </Text>
                 </View>
             ) : filteredBuses.length === 0 ? (
-                <View className="flex-1 justify-center items-center px-6">
-                    <Ionicons name="bus-outline" size={48} color="#6B7280" />
-                    <Text className="text-gray-400 mt-4 text-lg text-center">
-                        No buses found for this route.
+                <View className="flex-1 justify-center items-center">
+                    <View className="w-16 h-16 bg-gray-100 rounded-full items-center justify-center mb-4">
+                        <Ionicons name="bus-outline" size={32} color="#9CA3AF" />
+                    </View>
+                    <Text className="text-white text-base text-center">
+                        No buses available for this route{'\n'}Please try different locations
                     </Text>
                 </View>
             ) : (
-                <FlatList
-                    data={filteredBuses}
-                    keyExtractor={item => item.id}
-                    renderItem={renderBus}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 24 }}
-                />
+                <View className="flex-1 justify-center items-center">
+                    <Text className="text-white text-lg font-semibold mb-4">Available Buses</Text>
+                    <FlatList
+                        data={filteredBuses}
+                        keyExtractor={item => item.id}
+                        renderItem={renderBus}
+                        showsVerticalScrollIndicator={false}
+                        ItemSeparatorComponent={() => <View className="h-1" />}
+                    />
+                </View>
             )}
         </SafeAreaView>
     );
