@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { SafeAreaView, View, TextInput, FlatList, Text, TouchableOpacity, Keyboard, Image } from 'react-native';
+import {View, TextInput, FlatList, Text, TouchableOpacity, Keyboard, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { getBusData } from '@/utils/busData';
 import BusCard from '@/components/businfo';
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export default function SearchBus() {
     const router = useRouter();
