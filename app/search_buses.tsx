@@ -1,9 +1,18 @@
 import React, { useState, useMemo } from 'react';
-import { SafeAreaView, View, TextInput, FlatList, Text, TouchableOpacity, Keyboard, Image } from 'react-native';
+import {
+    View,
+    TextInput,
+    FlatList,
+    Text,
+    TouchableOpacity,
+    Keyboard,
+    StyleSheet,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { getBusData } from '@/utils/busData';
 import BusCard from '@/components/businfo';
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export default function SearchBus() {
     const router = useRouter();
@@ -20,9 +29,9 @@ export default function SearchBus() {
     }, [allBuses]);
 
     const currentInput = editing === 'start' ? start : destination;
-
-    const filteredSuggestions = useMemo(() =>
-            currentInput.length > 0
+    const filteredSuggestions = useMemo(
+        () =>
+            currentInput
                 ? locationSuggestions.filter(loc =>
                     loc.toLowerCase().includes(currentInput.toLowerCase())
                 )
@@ -32,27 +41,12 @@ export default function SearchBus() {
 
     const filteredBuses = useMemo(() => {
         if (!start.trim() || !destination.trim()) return [];
-        return allBuses.filter(bus =>
-            bus.startLocation.toLowerCase() === start.toLowerCase() &&
-            bus.endLocation.toLowerCase() === destination.toLowerCase()
+        return allBuses.filter(
+            bus =>
+                bus.startLocation.toLowerCase() === start.toLowerCase() &&
+                bus.endLocation.toLowerCase() === destination.toLowerCase()
         );
     }, [start, destination, allBuses]);
-
-    const renderBus = ({ item }) => (
-        <BusCard
-            routeName={item.routeName}
-            busNumber={item.busNumber}
-            occupancy={item.occupancy}
-            startLocation={item.startLocation}
-            endLocation={item.endLocation}
-            startTime={item.startTime}
-            endTime={item.endTime}
-            busType={item.busType}
-            fare={item.fare}
-            eta={item.eta}
-            isLive={true}
-        />
-    );
 
     const applySuggestion = (value: string) => {
         if (editing === 'start') setStart(value);
@@ -61,151 +55,104 @@ export default function SearchBus() {
         Keyboard.dismiss();
     };
 
+    const renderBus = ({ item }) => <BusCard {...item} isLive />;
+
     return (
-        <SafeAreaView className="flex-1 bg-bg_gray px-4 pt-4">
-            <View className="flex-row items-center justify-between px-4 py-4 border-b border-orange_4bor">
-                <TouchableOpacity
-                    onPress={() => router.back()}
-                    className="justify-center items-center"
-                    activeOpacity={0.7}
-                >
-                    <Image source={require('@/images/back.png')} className="h-10 w-10" />
+        <SafeAreaView className="flex-1 bg-bg_gray p-4">
+            {/* Header */}
+            <View className="flex-row items-center justify-center mb-4">
+                <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+                    <Ionicons name="arrow-back" size={24} color="#FFF" />
                 </TouchableOpacity>
-                <View className="flex-1 items-center justify-center">
-                    <Text className="text-white font-bold text-lg">Track Bus</Text>
-                    <Text className="text-accent text-sm">{`${start} → ${destination}`}</Text>
+                <View style={styles.titleWrap}>
+                    <Text style={styles.title}>Track Bus</Text>
+                    <Text style={styles.sub}>{`${start} → ${destination}`}</Text>
                 </View>
-                <View className="px-4 ml-3 pl-2">{/* Empty right placeholder */}</View>
-            </View>
-            {/* Start Input */}
-            <View className="mb-3">
-                <Text className="text-gray-400 mb-1">Start Position</Text>
-                <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: '#23272e',
-                    borderRadius: 12,
-                    paddingVertical: 2,
-                    paddingHorizontal: 10,
-                    borderWidth: 1,
-                    borderColor: start ? '#EF6820' : '#343A46',
-                }}>
-                    <Ionicons name="navigate" size={18} color="#EF6820" />
-                    <TextInput
-                        value={start}
-                        onChangeText={text => {
-                            setStart(text);
-                            setEditing('start');
-                        }}
-                        placeholder="Type starting location..."
-                        placeholderTextColor="#8B949E"
-                        className="flex-1 ml-2 text-white text-base"
-                        style={{ height: 44 }}
-                        autoCapitalize="words"
-                        clearButtonMode="while-editing"
-                        onFocus={() => setEditing('start')}
-                    />
-                </View>
-                {editing === 'start' && filteredSuggestions.length > 0 && (
-                    <View style={{
-                        position: 'absolute',
-                        top: 54,
-                        left: 0, right: 0,
-                        backgroundColor: '#23272e',
-                        borderRadius: 10,
-                        zIndex: 10,
-                        elevation: 20,
-                    }}>
-                        {filteredSuggestions.map(suggestion => (
-                            <TouchableOpacity
-                                key={suggestion}
-                                onPress={() => applySuggestion(suggestion)}
-                                style={{
-                                    padding: 14,
-                                    borderBottomWidth: 1,
-                                    borderColor: '#343A46',
-                                }}
-                            >
-                                <Text style={{ color: '#fff' }}>{suggestion}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
             </View>
 
-            {/* Destination Input */}
-            <View className="mb-3">
-                <Text className="text-gray-400 mb-1">Destination</Text>
-                <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: '#23272e',
-                    borderRadius: 12,
-                    paddingVertical: 2,
-                    paddingHorizontal: 10,
-                    borderWidth: 1,
-                    borderColor: destination ? '#EF6820' : '#343A46',
-                }}>
-                    <Ionicons name="location" size={19} color="#EF6820" />
-                    <TextInput
-                        value={destination}
-                        onChangeText={text => {
-                            setDestination(text);
-                            setEditing('end');
-                        }}
-                        placeholder="Type destination..."
-                        placeholderTextColor="#8B949E"
-                        className="flex-1 ml-2 text-white text-base"
-                        style={{ height: 44 }}
-                        autoCapitalize="words"
-                        clearButtonMode="while-editing"
-                        onFocus={() => setEditing('end')}
-                    />
+            {/* Inputs & Markers */}
+            <View style={styles.row}>
+                <View style={styles.markers}>
+                    <View style={styles.circle} />
+                    <View style={styles.line} />
+                    <View style={styles.square} />
                 </View>
-                {editing === 'end' && filteredSuggestions.length > 0 && (
-                    <View style={{
-                        position: 'absolute',
-                        top: 54,
-                        left: 0, right: 0,
-                        backgroundColor: '#23272e',
-                        borderRadius: 10,
-                        zIndex: 10,
-                        elevation: 20,
-                    }}>
-                        {filteredSuggestions.map(suggestion => (
-                            <TouchableOpacity
-                                key={suggestion}
-                                onPress={() => applySuggestion(suggestion)}
-                                style={{
-                                    padding: 14,
-                                    borderBottomWidth: 1,
-                                    borderColor: '#343A46',
-                                }}
+                <View style={styles.fields}>
+                    {[
+                        {
+                            label: 'Start',
+                            value: start,
+                            setValue: setStart,
+                            icon: 'navigate',
+                            field: 'start',
+                            placeholder: 'Type starting location...',
+                        },
+                        {
+                            label: 'Destination',
+                            value: destination,
+                            setValue: setDestination,
+                            icon: 'location',
+                            field: 'end',
+                            placeholder: 'Type destination...',
+                        },
+                    ].map(({ label, value, setValue, icon, field, placeholder }) => (
+                        <View key={field} style={[styles.fieldGroup, { overflow: 'visible' }]}>
+                            <Text style={styles.label}>{label}</Text>
+                            <View
+                                style={[
+                                    styles.inputBox,
+                                    { borderColor: value ? '#EF6820' : '#343A46' },
+                                ]}
                             >
-                                <Text style={{ color: '#fff' }}>{suggestion}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                )}
+                                <Ionicons name={icon} size={18} color="#EF6820" />
+                                <TextInput
+                                    value={value}
+                                    onChangeText={text => {
+                                        setValue(text);
+                                        setEditing(field as any);
+                                    }}
+                                    placeholder={placeholder}
+                                    placeholderTextColor="#8B949E"
+                                    style={styles.input}
+                                    onFocus={() => setEditing(field as any)}
+                                    clearButtonMode="while-editing"
+                                />
+                            </View>
+                            {editing === field && filteredSuggestions.length > 0 && (
+                                <View style={styles.suggestions}>
+                                    {filteredSuggestions.map((s, i) => (
+                                        <TouchableOpacity
+                                            key={s}
+                                            onPress={() => applySuggestion(s)}
+                                            style={[
+                                                styles.suggItem,
+                                                i === filteredSuggestions.length - 1 && styles.suggLast,
+                                            ]}
+                                        >
+                                            <Text style={styles.suggText}>{s}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                            )}
+                        </View>
+                    ))}
+                </View>
             </View>
 
-            {/* Divider */}
-            <View style={{ height: 2, backgroundColor: '#2e2e2e', marginVertical: 6, borderRadius: 999 }} />
+            <View style={styles.divider} />
 
             {/* Results */}
             {!start || !destination ? (
-                <View className="flex-1 justify-center items-center px-6">
+                <View style={styles.empty}>
                     <Ionicons name="search-outline" size={48} color="#6B7280" />
-                    <Text className="text-gray-400 mt-4 text-lg text-center">
-                        Enter a start and destination to see available buses.
+                    <Text style={styles.emptyText}>
+                        Enter start and destination to see buses.
                     </Text>
                 </View>
             ) : filteredBuses.length === 0 ? (
-                <View className="flex-1 justify-center items-center px-6">
+                <View style={styles.empty}>
                     <Ionicons name="bus-outline" size={48} color="#6B7280" />
-                    <Text className="text-gray-400 mt-4 text-lg text-center">
-                        No buses found for this route.
-                    </Text>
+                    <Text style={styles.emptyText}>No buses found for this route.</Text>
                 </View>
             ) : (
                 <FlatList
@@ -213,9 +160,63 @@ export default function SearchBus() {
                     keyExtractor={item => item.id}
                     renderItem={renderBus}
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: 24 }}
+                    contentContainerStyle={styles.list}
                 />
             )}
         </SafeAreaView>
     );
 }
+
+const styles = StyleSheet.create({
+        backBtn: { padding: 8 },
+    titleWrap: { flex: 1, alignItems: 'center' },
+    title: { color: '#FFF', fontSize: 18, fontWeight: 'bold' },
+    sub: { color: '#EF6820', fontSize: 12, marginTop: 2 },
+
+    row: { flexDirection: 'row', marginBottom: 16 },
+    markers: { width: 24, alignItems: 'center' },
+    circle: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#EF6820' },
+    line: { flex: 1, width: 2, backgroundColor: '#343A46', marginVertical: 4 },
+    square: { width: 10, height: 10, backgroundColor: '#EF6820' },
+
+    fields: { flex: 1, paddingLeft: 12 },
+    fieldGroup: { marginBottom: 12 },
+    label: { color: '#8B949E', marginBottom: 4, fontSize: 12 },
+    inputBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#23272e',
+        borderRadius: 12,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        height: 44,
+    },
+    input: { flex: 1, marginLeft: 8, color: '#FFF', fontSize: 16 },
+
+    suggestions: {
+        position: 'absolute',
+        top: 52,
+        left: 0,
+        right: 0,
+        backgroundColor: '#23272e',
+        borderRadius: 10,
+        zIndex: 100,
+        elevation: 10,
+    },
+    suggItem: {
+        padding: 12,
+        borderBottomWidth: 1,
+        borderColor: '#343A46',
+    },
+    suggLast: {
+        borderBottomWidth: 0,
+    },
+    suggText: { color: '#FFF' },
+
+    divider: { height: 2, backgroundColor: '#2e2e2e', marginVertical: 12, borderRadius: 1 },
+
+    empty: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 32 },
+    emptyText: { color: '#8B949E', marginTop: 12, fontSize: 16, textAlign: 'center' },
+
+    list: { paddingBottom: 24 },
+});
