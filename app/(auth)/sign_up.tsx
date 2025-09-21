@@ -5,7 +5,7 @@ import {Text} from "react-native";
 const signup = () => {
     return(
         <SafeAreaView>
-            <Text>sign_up</Text>
+            <Text>ssex </Text>
         </SafeAreaView>
     )
 }
