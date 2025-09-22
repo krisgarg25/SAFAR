@@ -11,6 +11,8 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@clerk/clerk-expo": "^2.15.2",
+    "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
@@ -25,6 +27,7 @@
     "expo-linking": "~8.0.8",
     "expo-location": "^19.0.7",
     "expo-router": "~6.0.5",
+    "expo-secure-store": "^15.0.7",
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
     "expo-symbols": "~1.0.7",
@@ -41,6 +44,7 @@
     "react-native-linear-gradient": "^2.8.3",
     "react-native-maps": "1.20.1",
     "react-native-maps-directions": "^1.9.0",
+    "react-native-modal": "^14.0.0-rc.1",
     "react-native-reanimated": "~4.1.0",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",

@@ -6,10 +6,10 @@ import {useLocationStore} from "@/store";
 import Map from "@/components/Map";
 import BusCard from "@/components/businfo";
 import { getBusData } from '@/utils/busData';
-import { Ionicons } from '@expo/vector-icons';
+
 import SearchBar from "@/components/SearchBar";
 import {useRouter} from "expo-router";
-import LinearGradient from 'react-native-linear-gradient';
+
 
 export default function search() {
     const { userLatitude, userLongitude, setUserLocation } = useLocationStore();
@@ -96,19 +96,19 @@ export default function search() {
             {/* Nearby Buses Section - Larger 60% */}
             <View className="flex-1">
                 {/* Section Header with Better Design */}
-                <View className="px-4 py-4 bg-gradient-to-r from-white to-black  border-b border-gray-700">
+                <View className="px-4 py-4 bg-gradient-to-r from-white to-black  border-b border-gray4bor">
                     <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center">
                             <View className="w-8 h-8 items-center justify-center mr-3">
-                                {/*<Ionicons name="bus" size={16} color="#EF6820" />*/}
+
                                 <Image source={require('../../images/view_buses.png')} className="h-[24px] w-[24px]" />
                             </View>
                             <View>
                                 <Text className="text-white text-lg font-bold">Nearby Buses</Text>
                             </View>
                         </View>
-                        <View className="bg-orange-500/20 px-4 py-2 rounded-full">
-                            <Text className="text-orange-400 text-s font-bold">
+                        <View className="bg-[rgba(6,182,212,0.2)] px-5 py-2 rounded-full">
+                            <Text className="text-cyan text-2xl font-bold">
                                 {buses?.length || 0}
                             </Text>
                         </View>
@@ -128,7 +128,10 @@ export default function search() {
                     ListEmptyComponent={() => (
                         <View className="flex-1 justify-center items-center py-12">
                             <View className="w-16 h-16 bg-gray-700/50 rounded-full items-center justify-center mb-4">
-                                <Ionicons name="bus-outline" size={32} color="#6B7280" />
+                                <Image
+                                    source={require('@/images/view_buses.png')}
+                                    className="h-12 w-12 mb-4"
+                                />
                             </View>
                             <Text className="text-gray-400 text-lg font-semibold mb-2">No buses nearby</Text>
                             <Text className="text-gray-500 text-sm text-center px-8">

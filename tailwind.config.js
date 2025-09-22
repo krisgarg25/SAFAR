@@ -19,7 +19,11 @@ module.exports = {
                 white90_4txt: 'rgba(255, 255, 255, 0.90)',
                 orange_4bor: 'rgba(239, 104 , 32 , 0.5)',
                 cyan_4txt:'rgba(6, 182 , 212 ,0.9)',
-                cyan_4bor:'rgba(6, 182 , 212 ,0.6)',
+                cyan_4bor:'rgba(6, 182 , 212 ,0.5)',
+                cyan:'rgba(6, 182 , 212 ,1)',
+                dropdown: 'rgba(31 41 55 /1)',
+                gray4bor: '#4b5563',
+
             },
         },
     },

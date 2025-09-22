@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
+
 import {Link} from "expo-router";
 
 // Types
@@ -45,28 +45,25 @@ const BusCard: React.FC<BusCardProps> = ({
         <TouchableOpacity
             onPress={onCardPress}
             activeOpacity={0.8}
-            className="mx-4 mb-1.5 bg-bg_gray rounded-2xl overflow-hidden mt-2"
-            style={{
-                shadowColor: '#EF6820',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.35,
-                shadowRadius: 8,
-                elevation: 4.5,
-            }}
+            className="mx-4 mb-1.5 bg-card rounded-2xl overflow-hidden mt-2"
+
         >
             {/* Header Section */}
-            <View className="bg-bg_gray px-4 py-1.5 border-2 border-white35_4bor rounded-t-2xl">
+            <View className="bg-card px-4 py-1.5 border-2 border-cyan_4bor rounded-t-2xl">
                 <View className="flex-row items-start justify-between">
                     <View className="flex-1 mr-3">
                         <Text className="text-white font-bold text-lg mb-2" numberOfLines={1}>
                             {routeName}
                         </Text>
                         <View className="flex-row items-center flex-wrap">
-                            <View className="bg-gray-600 px-2 py-1 rounded flex-row items-center mr-2 mb-1">
-                                <Ionicons name="bus-outline" size={12} color="white" />
+                            <View className="bg-gray4bor px-2 py-1 rounded flex-row items-center mr-2 mb-1">
+                                <Image
+                                    source={require('@/images/view_buses.png')}
+                                    className="h-4 w-3 mb-1"
+                                />
                                 <Text className="text-white text-xs font-medium ml-1">{busNumber}</Text>
                             </View>
-                            <View className="bg-gray-600 px-2 py-1 rounded mr-2 mb-1">
+                            <View className="bg-gray4bor px-2 py-1 rounded mr-2 mb-1">
                                 <Text className="text-white text-xs font-medium">{busType}</Text>
                             </View>
                             {isLive && (
@@ -89,7 +86,7 @@ const BusCard: React.FC<BusCardProps> = ({
             </View>
 
             {/* Route Section - Horizontal Layout */}
-            <View className="px-4 py-3.5 border-l-2 border-r-2 border-b-2 border-white35_4bor rounded-b-2xl">
+            <View className="px-4 py-3.5 border-l-2 border-r-2 border-b-2 border-cyan_4bor rounded-b-2xl">
                 {/* Route Timeline - Horizontal with Inline Gradient */}
                 <View className="mb-2">
                     {/* Top Row - Labels and Dots */}
@@ -115,11 +112,11 @@ const BusCard: React.FC<BusCardProps> = ({
                         </View>
 
                         {/* Simple Line with Arrow */}
-                        <View style={{ width: '30%' }} className="items-center px-4">
-                            <View className="flex-row items-center justify-center w-full">
+                        <View style={{ width: '30%' }} className="items-center justify-items-end px-5">
+                            <View className="flex-row items-center justify-items-end w-full">
                                 <View className="flex-1 h-0.5 bg-white" />
-                                <View className="mx-2">
-                                    <Ionicons name="chevron-forward" size={16} color="#FFFFFF" />
+                                <View className="mx-1">
+                                    <Image source={require('@/images/buscardarrow.png')} className="h-4 w-4" />
                                 </View>
                                 <View className="flex-1 h-0.5 bg-white" />
                             </View>
@@ -151,15 +148,15 @@ const BusCard: React.FC<BusCardProps> = ({
                     <View className="flex-row items-center flex-1">
                         {fare && (
                             <View className="flex-row items-center mr-4">
-                                <Ionicons name="card-outline" size={16} color="#9CA3AF" />
+                                <Image source={require('@/images/wallet.png')} className="h-5 w-5" />
                                 <Text className="text-gray-300 ml-1 font-medium">₹{fare}</Text>
                             </View>
                         )}
 
                         {/* ETA - Now uses prop instead of random */}
                         <View className="flex-row items-center">
-                            <Ionicons name="time-outline" size={16} color="#9CA3AF" />
-                            <Text className="text-gray-300 ml-1 text-sm">
+                            <Image source={require('@/images/time-left.png')} className="h-5 w-5" />
+                            <Text className="text-white90_4txt ml-1 text-sm">
                                 {eta ? `${eta} mins away` : 'ETA unavailable'}
                             </Text>
                         </View>
@@ -169,11 +166,11 @@ const BusCard: React.FC<BusCardProps> = ({
                     <Link href={`../track/${busNumber}`} asChild>
                     <TouchableOpacity
                         className="px-6 py-2 rounded-full flex-row items-center"
-                        style={{ backgroundColor: 'rgba(239, 104, 32, 0.85)', opacity: 0.95 }}
+                        style={{ backgroundColor: 'rgba(6, 182 , 212 ,1)', opacity: 0.95 }}
                         activeOpacity={0.5}
                     >
-                        <Text className="text-white font-semibold mr-2">Track</Text>
-                        <Ionicons name="location" size={16} color="white" />
+                        <Text className="text-white font-semibold mr-3">Track</Text>
+                        <Image source={require('@/images/track_pin.png')} className="h-4 w-4" />
                     </TouchableOpacity>
                     </Link>
                 </View>
