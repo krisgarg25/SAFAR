@@ -1,13 +1,14 @@
-import {SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native'
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import React from 'react'
 import {Ionicons} from "@expo/vector-icons";
 import SearchBar from "@/components/SearchBar";
 import {router} from "expo-router";
 import RouteCard from '@/components/saved_route_card';
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const profile = () => {
     return (
-        <SafeAreaView className='flex-1 bg-bg_gray pt-safe'>
+        <SafeAreaView className='flex-1 bg-bg_gray'>
             <View className="flex-row justify-between items-center px-4 py-4">
                 <View className="flex-row items-center">
                     <Text className="text-white text-lg mr-2">Welcome,</Text>

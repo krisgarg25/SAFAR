@@ -55,7 +55,7 @@ const _layout = () => {
             overflow:'hidden',
             borderWidth:1.5,
             borderTopWidth:2,
-            borderColor:"#EF6820",
+            borderColor:"rgba(6, 182 , 212 ,0.5)",
         },
           tabBarLabelStyle:{
             color:'#070707',

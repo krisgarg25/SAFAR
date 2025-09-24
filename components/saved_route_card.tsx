@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, Image} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
 import {Link} from "expo-router";
 
 // Types
@@ -25,132 +24,88 @@ const RouteCard: React.FC<RouteCardProps> = ({
     return (
         <TouchableOpacity
             onPress={onPress}
-            activeOpacity={0.7}
-            className={`mx-4 mb-3  rounded-2xl p-5 shadow-lg bg-bg_gray border border-white35_4bor`}
-            style={{
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 8,
-            }}
+            activeOpacity={0.95}
+            className="mx-3 mb-3 bg-card border-card_bor rounded-[20px] border-2 "
         >
-            {/* Header */}
-            <View className="flex-row items-center justify-between mb-3">
-                <View className="flex-row items-center flex-1">
-                        <Image source={require('../images/route.png')} className="h-8 w-8 mb-1 mr-1" />
-                    <Text className="text-white font-bold text-lg">Route {routeNumber}</Text>
+            {/* Header Row - Route Badge + View Buses Button */}
+            <View className="flex-row items-center justify-between p-3 pb-4">
+                {/* Route Badge */}
+                <View
+                    className="flex-row items-center rounded-2xl px-4 py-3 bg-cyan_4txt"
+                >
+                    <Image source={require('../images/route.png')} className="h-5 w-5 mr-2" />
+                    <Text className="text-white font-bold text-base">{routeNumber}</Text>
                 </View>
+
+                {/* View Buses Button */}
                 <Link href={`../buses/${routeNumber}`} asChild>
                     <TouchableOpacity
-                        onPress={() => {/* Handle navigation */}}
-                        className="flex-row items-center justify-between rounded-xl px-2 py-2.5 border"
-                        style={{
-                            backgroundColor: '#2d2e2f',
-                            borderColor: 'rgba(239, 104, 32, 0.3)',
-                            shadowColor: '#EF6820',
-                            shadowOffset: { width: 0, height: 0 },
-                            shadowOpacity: 0.3,
-                            shadowRadius: 6,
-                            elevation: 6,
-                            width: 90, // Keeping it compact
-                        }}
-                        activeOpacity={0.85}
+                        className="flex-row items-center rounded-xl px-4 py-3 bg-cyan_4txt"
+                        activeOpacity={0.8}
                     >
-                        <View className="flex-row items-center flex-1">
-                            <View className="rounded-lg p-1 mr-1.5 mb-0.5" >
-                                <Image
-                                    source={require('../images/view_buses.png')}
-                                    className="h-3.5 w-3.5"
-                                    // style={{ tintColor: '#EF6820' }}
-                                />
-                            </View>
-                            <Text className="text-white font-semibold text-sm flex-1">Buses</Text>
-                        </View>
-
-                        <View className="rounded-full p-0.5" style={{ backgroundColor: 'rgba(239, 104, 32, 0.2)' }}>
-                            <Ionicons name="chevron-forward" size={9} color="#EF6820" />
-                        </View>
+                        <Image
+                            source={require('../images/view_buses.png')}
+                            className="h-5 w-5 mr-2"
+                        />
+                        <Text className="text-white font-bold text-sm">Buses</Text>
+                        <Ionicons name="arrow-forward" size={12} color="white" className="ml-1" />
                     </TouchableOpacity>
                 </Link>
             </View>
 
-            {/* Route Path */}
-            <View className="mb-0 px-4">
-                {/* Labels */}
-                <View className="flex-row justify-between mb-3">
-                    <Text className="text-gray-400 text-xs uppercase tracking-widest">Departure</Text>
-                    <Text className="text-gray-400 text-xs uppercase tracking-widest">Arrival</Text>
-                </View>
+            {/* Journey Section */}
+            <View className="px-5 pb-4">
+                {/* Journey Visualization */}
+                <View className="bg-card rounded-2xl p-4 border-white35_4bor ">
+                    {/* Route Connection Line */}
+                    <View className="flex-row items-center mb-4">
+                        {/* Start Dot */}
+                        <View className="w-3 h-3 bg-emerald-500 rounded-full"
+                        />
 
-                {/* Visual */}
-                <View style={{ position: 'relative', height: 20 }}>
-                    {/* Simple Line with Arrow (absolutely centered) */}
-                    <View style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        width: 80,
-                        transform: [{ translateX: -40 }, { translateY: -8 }],
-                    }}>
-                        <View className="flex-row items-center justify-center w-full">
-                            <View className="flex-1 h-0.5 bg-white" />
-                            <View className="mx-2">
-                                <Ionicons name="chevron-forward" size={16} color="#FFFFFF" />
+                        {/* Connection Line with Bus */}
+                        <View className="flex-1 mx-3">
+                            <View className="flex-row items-center">
+                                <View className="flex-1 h-0.5 bg-cyan" />
+                                <View className="mx-2  ">
+                                    <Image
+                                        source={require('../images/view_buses.png')}
+                                        className="h-5 w-5"
+                                    />
+                                </View>
+                                <View className="flex-1 h-0.5 bg-cyan" />
                             </View>
-                            <View className="flex-1 h-0.5 bg-white" />
                         </View>
+
+                        {/* End Dot */}
+                        <View className="w-3 h-3 bg-red-500 rounded-full"
+                        />
                     </View>
 
-                    {/* Start & End */}
-                    <View className="flex-row items-center justify-between">
-                        {/* Start */}
-                        <View className="flex-row items-center min-w-0">
-                            <View className="w-5 h-5 bg-green-600 rounded-full mr-3 shadow-md border border-white" />
-                            <Text
-                                className="text-white font-bold text-base"
-                                numberOfLines={1}
-                                style={{ flexShrink: 1 }}
-                            >
+                    {/* Destination Labels and Names */}
+                    <View className="flex-row justify-between">
+                        {/* Departure */}
+                        <View className="flex-1 mr-4">
+                            <Text className="text-white35_4bor text-xs font-semibold uppercase tracking-wide mb-1">
+                                FROM
+                            </Text>
+                            <Text className="text-white90_4txt font-bold text-lg leading-tight">
                                 {startDestination}
                             </Text>
                         </View>
 
-                        {/* End */}
-                        <View className="flex-row items-center min-w-0">
-                            <Text
-                                className="text-white font-bold text-base"
-                                numberOfLines={1}
-                                style={{ textAlign: 'right', flexShrink: 1 }}
-                            >
+                        {/* Arrival */}
+                        <View className="flex-1 ml-4">
+                            <Text className="text-white35_4bor text-xs font-semibold uppercase tracking-wide mb-1 text-right">
+                                TO
+                            </Text>
+                            <Text className="text-white90_4txt font-bold text-lg leading-tight text-right">
                                 {stopDestination}
                             </Text>
-                            <View className="w-5 h-5 bg-red-600 rounded-full ml-3 shadow-md border border-white" />
                         </View>
                     </View>
                 </View>
             </View>
-
-
-            {/* Footer */}
-            {(estimatedTime || distance) && (
-                <View className="flex-row items-center justify-between pt-3 border-t border-gray-700">
-                    <View className="flex-row items-center space-x-4">
-                        {distance && (
-                            <View className="flex-row items-center">
-                                <Ionicons name="speedometer-outline" size={14} color="#9CA3AF" />
-                                <Text className="text-gray-400 text-sm ml-1 font-medium">{distance}</Text>
-                            </View>
-                        )}
-                        {estimatedTime && (
-                            <View className="flex-row items-center">
-                                <Ionicons name="time-outline" size={14} color="#9CA3AF" />
-                                <Text className="text-gray-400 text-sm ml-1 font-medium">{estimatedTime}</Text>
-                            </View>
-                        )}
-                    </View>
-                </View>
-            )}
         </TouchableOpacity>
     );
 };

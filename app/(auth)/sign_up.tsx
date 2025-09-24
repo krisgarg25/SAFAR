@@ -9,6 +9,8 @@ import {
     Modal,
     TouchableOpacity,
     TextInput,
+    KeyboardAvoidingView,
+    Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -59,19 +61,25 @@ const SignUp = () => {
         setLoading(true);
 
         try {
-            // Try with firstName/lastName first
+            // Create with firstName and lastName directly
+            const firstName = form.name.split(' ')[0] || form.name;
+            const lastName = form.name.split(' ').slice(1).join(' ') || '';
+
             await signUp.create({
                 emailAddress: form.email,
                 password: form.password,
-                firstName: form.name.split(' ')[0] || form.name,
-                lastName: form.name.split(' ').slice(1).join(' ') || '',
+                firstName: firstName,
+                lastName: lastName,
             });
 
+            console.log("✅ Signup created with name:", firstName, lastName);
             await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
             setShowVerifyModal(true);
 
         } catch (err: any) {
-            // If firstName/lastName failed, try without them
+            console.log("Sign up error:", err);
+
+            // If firstName/lastName failed, try just email/password
             if (err.errors && err.errors[0]?.code === "form_param_unknown") {
                 try {
                     await signUp.create({
@@ -81,15 +89,13 @@ const SignUp = () => {
 
                     await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
                     setShowVerifyModal(true);
-
+                    console.log("✅ Signup created without name fields");
                 } catch (retryErr: any) {
-                    console.log("Retry error:", retryErr);
                     Alert.alert("Error", "Sign up failed. Please try again.");
                 }
             } else if (err.status === 429) {
                 Alert.alert("Too Many Attempts", "Please wait before trying again.");
             } else {
-                console.log("Sign up error:", err);
                 Alert.alert("Error", err.errors[0]?.longMessage || "Sign up failed. Please try again.");
             }
         }
@@ -114,17 +120,8 @@ const SignUp = () => {
             });
 
             if (result.status === "complete") {
+                console.log("✅ Verification complete");
                 await setActive({ session: result.createdSessionId });
-
-                // Add name to metadata
-                try {
-                    await signUp.update({
-                        unsafeMetadata: { name: form.name }
-                    });
-                } catch (metaErr) {
-                    // Non-critical error
-                    console.log("Metadata update failed:", metaErr);
-                }
 
                 setShowVerifyModal(false);
                 setShowSuccessModal(true);
@@ -145,136 +142,161 @@ const SignUp = () => {
 
     return (
         <SafeAreaView className="flex-1" style={{ backgroundColor: '#1A202C' }}>
-            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
-                {/* Header */}
-                <View className="pt-16 pb-10 items-center">
-                    <Text className="text-3xl text-white font-bold">
-                        Lets Get Started
-                    </Text>
-                </View>
-
-                {/* Form */}
-                <View className="px-6 flex-1">
-                    <View className="space-y-4 mb-8">
-                        <InputField
-                            label="NAME"
-                            placeholder="Enter your full name"
-                            value={form.name}
-                            onChangeText={(value) => setForm({ ...form, name: value })}
-                            autoCapitalize="words"
-                        />
-
-                        <InputField
-                            label="EMAIL ID"
-                            placeholder="Enter your email"
-                            value={form.email}
-                            onChangeText={(value) => setForm({ ...form, email: value })}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                        />
-
-                        <InputField
-                            label="PASSWORD"
-                            placeholder="Enter your password"
-                            secureTextEntry={true}
-                            value={form.password}
-                            onChangeText={(value) => setForm({ ...form, password: value })}
-                        />
-
-                        <InputField
-                            label="CONFIRM PASSWORD"
-                            placeholder="Confirm your password"
-                            secureTextEntry={true}
-                            value={form.confirmPassword}
-                            onChangeText={(value) => setForm({ ...form, confirmPassword: value })}
-                        />
-                    </View>
-
-                    <CustomButton
-                        title={loading ? "Creating Account..." : "Create Account"}
-                        onPress={handleSignUp}
-                        className="mb-6"
-                    />
-
-                    <OAuth />
-
-                    <View className="flex-row justify-center items-center mt-6 mb-8">
-                        <Text className="text-gray-400 text-base">
-                            Already have an account?{" "}
-                        </Text>
-                        <TouchableOpacity onPress={() => router.push("/(auth)/welcome")}>
-                            <Text className="text-base font-medium" style={{ color: '#EF6820' }}>
-                                Sign In
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </ScrollView>
-
-            {/* Verify Modal */}
-            <Modal visible={showVerifyModal} transparent={true}>
-                <View
-                    className="flex-1 justify-center items-center px-6"
-                    style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
+            <KeyboardAvoidingView
+                className="flex-1"
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+            >
+                <ScrollView
+                    className="flex-1"
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        paddingBottom: 50
+                    }}
                 >
-                    <View className="bg-white w-full max-w-sm p-6 rounded-2xl">
-                        <Text className="text-xl font-bold mb-4 text-black text-center">
-                            Enter Verification Code
+                    {/* Header */}
+                    <View className="pt-8 pb-6 items-center">
+                        <Text className="text-2xl text-white font-bold">
+                            Lets Get Started
                         </Text>
+                    </View>
 
-                        <Text className="text-gray-600 mb-6 text-center">
-                            Check {form.email} for your 6-digit code
-                        </Text>
+                    {/* Form */}
+                    <View className="px-6 flex-1">
+                        <View className="space-y-3 mb-6">
+                            <InputField
+                                label="NAME"
+                                placeholder="Enter your full name"
+                                value={form.name}
+                                onChangeText={(value) => setForm({ ...form, name: value })}
+                                autoCapitalize="words"
+                                returnKeyType="next"
+                            />
 
-                        <View className="bg-gray-100 rounded-lg p-4 mb-4">
-                            <TextInput
-                                placeholder="000000"
-                                placeholderTextColor="#9CA3AF"
-                                value={code}
-                                onChangeText={(text) => {
-                                    setCode(text);
-                                    setError("");
-                                }}
-                                keyboardType="number-pad"
-                                maxLength={6}
-                                style={{
-                                    fontSize: 18,
-                                    textAlign: 'center',
-                                    letterSpacing: 8,
-                                    color: '#000',
-                                    fontWeight: 'bold'
-                                }}
-                                autoFocus={true}
+                            <InputField
+                                label="EMAIL ID"
+                                placeholder="Enter your email"
+                                value={form.email}
+                                onChangeText={(value) => setForm({ ...form, email: value })}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                returnKeyType="next"
+                            />
+
+                            <InputField
+                                label="PASSWORD"
+                                placeholder="Enter your password"
+                                secureTextEntry={true}
+                                value={form.password}
+                                onChangeText={(value) => setForm({ ...form, password: value })}
+                                returnKeyType="next"
+                            />
+
+                            <InputField
+                                label="CONFIRM PASSWORD"
+                                placeholder="Confirm your password"
+                                secureTextEntry={true}
+                                value={form.confirmPassword}
+                                onChangeText={(value) => setForm({ ...form, confirmPassword: value })}
+                                returnKeyType="done"
+                                onSubmitEditing={handleSignUp}
                             />
                         </View>
 
-                        {error ? (
-                            <Text className="text-red-500 text-sm mb-4 text-center">
-                                {error}
-                            </Text>
-                        ) : null}
+                        <CustomButton
+                            title={loading ? "Creating Account..." : "Create Account"}
+                            onPress={handleSignUp}
+                            className="mb-4"
+                        />
 
-                        <TouchableOpacity
-                            className="rounded-full py-4 mb-4"
-                            style={{ backgroundColor: '#EF6820' }}
-                            onPress={handleVerify}
-                            disabled={loading}
-                        >
-                            <Text className="text-white text-center font-semibold text-lg">
-                                {loading ? "Verifying..." : "Verify"}
-                            </Text>
-                        </TouchableOpacity>
+                        <OAuth />
 
-                        <TouchableOpacity
-                            className="py-3"
-                            onPress={() => setShowVerifyModal(false)}
-                        >
-                            <Text className="text-gray-500 text-center">
-                                Cancel
+                        {/* Sign In Link */}
+                        <View className="flex-row justify-center items-center mt-4 mb-6">
+                            <Text className="text-gray-400 text-base">
+                                Already have an account?{" "}
                             </Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={() => router.push("/(auth)/welcome")}>
+                                <Text className="text-base font-medium" style={{ color: '#EF6820' }}>
+                                    Sign In
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+
+            {/* Verify Modal */}
+            <Modal visible={showVerifyModal} transparent={true}>
+                <KeyboardAvoidingView
+                    className="flex-1"
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                >
+                    <View
+                        className="flex-1 justify-center items-center px-6"
+                        style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
+                    >
+                        <View className="bg-white w-full max-w-sm p-6 rounded-2xl">
+                            <Text className="text-xl font-bold mb-4 text-black text-center">
+                                Enter Verification Code
+                            </Text>
+
+                            <Text className="text-gray-600 mb-6 text-center">
+                                Check {form.email} for your 6-digit code
+                            </Text>
+
+                            <View className="bg-gray-100 rounded-lg p-4 mb-4">
+                                <TextInput
+                                    placeholder="000000"
+                                    placeholderTextColor="#9CA3AF"
+                                    value={code}
+                                    onChangeText={(text) => {
+                                        setCode(text);
+                                        setError("");
+                                    }}
+                                    keyboardType="number-pad"
+                                    maxLength={6}
+                                    style={{
+                                        fontSize: 18,
+                                        textAlign: 'center',
+                                        letterSpacing: 8,
+                                        color: '#000',
+                                        fontWeight: 'bold'
+                                    }}
+                                    autoFocus={true}
+                                />
+                            </View>
+
+                            {error ? (
+                                <Text className="text-red-500 text-sm mb-4 text-center">
+                                    {error}
+                                </Text>
+                            ) : null}
+
+                            <TouchableOpacity
+                                className="rounded-full py-4 mb-4"
+                                style={{ backgroundColor: '#EF6820' }}
+                                onPress={handleVerify}
+                                disabled={loading}
+                            >
+                                <Text className="text-white text-center font-semibold text-lg">
+                                    {loading ? "Verifying..." : "Verify"}
+                                </Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                className="py-3"
+                                onPress={() => setShowVerifyModal(false)}
+                            >
+                                <Text className="text-gray-500 text-center">
+                                    Cancel
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </KeyboardAvoidingView>
             </Modal>
 
             {/* Success Modal */}

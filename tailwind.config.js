@@ -23,6 +23,7 @@ module.exports = {
                 cyan:'rgba(6, 182 , 212 ,1)',
                 dropdown: 'rgba(31 41 55 /1)',
                 gray4bor: '#4b5563',
+                white: 'rgba(255, 255, 255)',
 
             },
         },
