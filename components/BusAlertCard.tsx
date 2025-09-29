@@ -116,7 +116,7 @@ const BusAlertCard: React.FC<BusAlertCardProps> = ({
                         <Switch
                             value={smsEnabled}
                             onValueChange={handleToggleSMS}
-                            trackColor={{ false: '#374151', true: '#EF6820' }}
+                            trackColor={{ false: '#374151', true:'rgba(6, 182 , 212 ,0.9)' }}
                             thumbColor={smsEnabled ? '#FFFFFF' : '#9CA3AF'}
                             style={{ transform: [{ scaleX: 0.85 }, { scaleY: 0.85 }] }}
                         />
@@ -160,7 +160,7 @@ const BusAlertCard: React.FC<BusAlertCardProps> = ({
                     <Link href={`../track/${busNumber}`} asChild>
                         <TouchableOpacity
                             className="px-6 py-2 rounded-full flex-row items-center ml-4"
-                            style={{ backgroundColor: 'rgba(239, 104, 32, 0.85)', opacity: 0.95 }}
+                            style={{ backgroundColor: 'rgba(6, 182 , 212 ,0.8)', opacity: 0.95 }}
                             activeOpacity={0.5}
                         >
                             <Text className="text-white font-semibold mr-2">Track</Text>

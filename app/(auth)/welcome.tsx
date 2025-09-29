@@ -24,7 +24,7 @@ const Welcome: React.FC = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-bg_gray">
-            <View className="flex-[0.6] justify-center items-center px-5">
+            <View className="flex-[0.6] justify-center items-center px-5 border-cyan">
                 <Image
                     source={require('@/images/Welcome_IMG.png')}
                     className="w-full h-full"
@@ -40,7 +40,7 @@ const Welcome: React.FC = () => {
 
             <View className="flex-[0.4] px-5 pb-12 justify-center">
                 <TouchableOpacity
-                    className="bg-accent py-4 px-5 rounded-3xl flex-row items-center justify-center shadow-lg"
+                    className="bg-cyan py-4 px-5 rounded-3xl flex-row items-center justify-center shadow-lg"
                     onPress={handlePhoneLogin}
                     activeOpacity={0.8}
                 >
@@ -57,12 +57,12 @@ const Welcome: React.FC = () => {
                 </View>
 
                 <TouchableOpacity
-                    className="bg-white py-4 px-5 rounded-3xl flex-row items-center justify-center mb-8 shadow-lg"
+                    className="bg-white py-4 px-5 rounded-3xl flex-row items-center justify-center mb-8 shadow-lg border-cyan"
                     onPress={handleEmailContinue}
                     activeOpacity={0.8}
                 >
-                    <Ionicons name="mail" size={18} color="#f97316" />
-                    <Text className="text-accent text-base font-semibold ml-2">
+                    <Ionicons name="mail" size={18} color="#06b6d4" />
+                    <Text className="text-cyan_4txt text-base font-semibold ml-2">
                         Continue with Email
                     </Text>
                 </TouchableOpacity>
@@ -70,7 +70,7 @@ const Welcome: React.FC = () => {
                 <View className="flex-row justify-center items-center">
                     <Text className="text-white60_4txt text-sm">Don't have account? </Text>
                     <TouchableOpacity onPress={handleCreateAccount}>
-                        <Text className="text-accent text-sm font-semibold ml-1">
+                        <Text className="text-cyan_4txt text-sm font-semibold ml-1">
                             Create Account
                         </Text>
                     </TouchableOpacity>

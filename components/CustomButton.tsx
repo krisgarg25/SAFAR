@@ -21,14 +21,14 @@ const getBgVariantStyle = (variant: ButtonProps["bgVariant"]) => {
         case "outline":
             return "bg-transparent border-gray-300 border-[0.5px]";
         default:
-            return "bg-[#EF6820]"; // Your orange color
+            return "bg-[#06b6d4]"; // Your orange color
     }
 };
 
 const getTextVariantStyle = (variant: ButtonProps["textVariant"]) => {
     switch (variant) {
         case "primary":
-            return "text-black";
+            return "text-white";
         case "secondary":
             return "text-gray-100";
         case "danger":

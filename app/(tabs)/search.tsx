@@ -89,7 +89,7 @@ export default function search() {
                 onPress={() => router.push('/search_buses')}
             />
             {/* Map Section - Smaller 40% */}
-            <View style={{ height: '40%' }} className="border-b border-gray-700 pt-4">
+            <View style={{ height: '40%' }} className="border- border-cyan_4bor pt-4">
                 <Map />
             </View>
 

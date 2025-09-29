@@ -98,7 +98,7 @@ export default function AlertScreen() {
 
     return (
         <View className="flex-1 bg-bg_gray">
-            <SafeAreaView className="bg-bg_gray px-4 pt-2 pb-3 border-b border-orange_4bor">
+            <SafeAreaView className="bg-bg_gray px-4 pt-2 pb-3 border-b border-cyan_4bor">
                 <View className="flex-row items-center justify-between h-11">
                     <TouchableOpacity onPress={() => router.back()}>
                         <Image source={require('@/images/back.png')} className="h-10 w-10" />
@@ -112,7 +112,7 @@ export default function AlertScreen() {
                         onPress={() => router.push('/set-alert')}
                         className="w-11 h-11 items-center justify-center"
                     >
-                        <Ionicons name="add" size={28} color="#EF6820" />
+                        <Ionicons name="add" size={28} color='rgba(6, 182 , 212 ,0.9)' />
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>

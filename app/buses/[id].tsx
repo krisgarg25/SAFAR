@@ -1,4 +1,5 @@
-import { Ionicons } from '@expo/vector-icons';
+import
+{ Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from 'react';
@@ -67,12 +68,12 @@ const buses = () => {
         <TouchableOpacity
             onPress={onPress}
             className={`flex-row items-center p-4 rounded-2xl mb-3 ${
-                isSelected ? 'bg-orange-500/20 border border-orange-500' : 'bg-gray-800'
+                isSelected ? 'bg-cyan_4bor_transparent border border-cyan_4txt' : 'bg-gray-800'
             }`}
             activeOpacity={0.8}
         >
             <View className={`w-12 h-12 rounded-full items-center justify-center mr-4 ${
-                isSelected ? 'bg-orange-500' : 'bg-gray-700'
+                isSelected ? 'bg-cyan_4txt' : 'bg-gray-700'
             }`}>
                 <Ionicons
                     name={icon}
@@ -83,7 +84,7 @@ const buses = () => {
 
             <View className="flex-1">
                 <Text className={`font-semibold text-base mb-1 ${
-                    isSelected ? 'text-orange-400' : 'text-white'
+                    isSelected ? 'text-cyan_4txt' : 'text-white'
                 }`}>
                     {title}
                 </Text>
@@ -93,7 +94,7 @@ const buses = () => {
             </View>
 
             {isSelected && (
-                <View className="w-6 h-6 bg-orange-500 rounded-full items-center justify-center">
+                <View className="w-6 h-6 bg-cyan_4txt rounded-full items-center justify-center">
                     <Ionicons name="checkmark" size={16} color="white" />
                 </View>
             )}
@@ -181,7 +182,7 @@ const buses = () => {
             >
                 <View className="flex-1 bg-bg_gray">
                     {/* Modal Header */}
-                    <View className="flex-row items-center justify-between p-6 border-b border-gray-700">
+                    <View className="flex-row items-center justify-between p-6 border-b border-cyan_4bor">
                         <View>
                             <Text className="text-white text-xl font-bold">Sort & Filter</Text>
                             <Text className="text-gray-400 text-sm mt-1">Choose how to sort your results</Text>
@@ -240,7 +241,7 @@ const buses = () => {
                                 setSortBy('none');
                                 setIsFilterModalVisible(false);
                             }}
-                            className="bg-gray-700 py-4 rounded-2xl items-center mb-3"
+                            className="bg-cyan py-4 rounded-2xl items-center mb-3"
                             activeOpacity={0.8}
                         >
                             <Text className="text-white font-semibold text-lg">Clear All Filters</Text>

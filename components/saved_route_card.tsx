@@ -30,11 +30,9 @@ const RouteCard: React.FC<RouteCardProps> = ({
             {/* Header Row - Route Badge + View Buses Button */}
             <View className="flex-row items-center justify-between p-3 pb-4">
                 {/* Route Badge */}
-                <View
-                    className="flex-row items-center rounded-2xl px-4 py-3 bg-cyan_4txt"
-                >
-                    <Image source={require('../images/route.png')} className="h-5 w-5 mr-2" />
-                    <Text className="text-white font-bold text-base">{routeNumber}</Text>
+                <View className="flex-row items-center rounded-2xl px-4 py-2.5 ">
+                    <Image source={require('../images/route.png')} className="h-5 w-5 mr-2.5" />
+                    <Text className="text-white font-bold text-lg">Route {routeNumber}</Text>
                 </View>
 
                 {/* View Buses Button */}
@@ -67,7 +65,7 @@ const RouteCard: React.FC<RouteCardProps> = ({
                         <View className="flex-1 mx-3">
                             <View className="flex-row items-center">
                                 <View className="flex-1 h-0.5 bg-cyan" />
-                                <View className="mx-2  ">
+                                <View className=" mx-2 ">
                                     <Image
                                         source={require('../images/view_buses.png')}
                                         className="h-5 w-5"

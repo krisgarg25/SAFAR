@@ -3,7 +3,9 @@ import {useBusStore, useLocationStore} from "@/store";
 import {calculateRegion, generateMarkersFromData} from "@/utils/map";
 import {useEffect, useRef, useState} from "react";
 import { getBusData } from '@/utils/busData';
-import {View,Image} from "react-native";
+import {View, Image} from "react-native";
+
+
 
 // Remove any old MarkerData interfaces and keep only this one
 declare interface MarkerData {
@@ -25,7 +27,6 @@ declare interface MarkerData {
     status: 'arriving_shortly' | 'on_time' | 'at_stop';
     smsNotification: boolean;
 }
-
 
 interface MapProps {
     userLatitude?: number;
@@ -67,16 +68,55 @@ const Map = ({ userLatitude: propUserLat, userLongitude: propUserLng }: MapProps
             setMarkers(newMarkers);
         }
     }, [buses, userLatitude, userLongitude]);
+
     const mapRef = useRef(null);
 
     return (
         <MapView
+            ref={mapRef}
             provider={PROVIDER_DEFAULT}
             style={{flex: 1}}
             mapType="standard"
             showsPointsOfInterest={false}
+            showsUserLocation={true}
+            showsMyLocationButton={true}
+            followsUserLocation={true}
             initialRegion={region}
         >
+            {/*/!* User Location Marker *!/*/}
+            {/*{userLatitude && userLongitude && (*/}
+            {/*    <Marker*/}
+            {/*        coordinate={{*/}
+            {/*            latitude: userLatitude,*/}
+            {/*            longitude: userLongitude*/}
+            {/*        }}*/}
+            {/*        title="Your Location"*/}
+            {/*        description="You are here"*/}
+            {/*        anchor={{ x: 0.5, y: 0.5 }}*/}
+            {/*    >*/}
+
+
+
+            {/*    </Marker>*/}
+            {/*)}*/}
+
+            {/* Destination Marker (if available) */}
+            {destinationLatitude && destinationLongitude && (
+                <Marker
+                    coordinate={{
+                        latitude: destinationLatitude,
+                        longitude: destinationLongitude
+                    }}
+                    title="Destination"
+                    description="Your destination"
+                >
+                    <View className="w-10 h-10 bg-red-500 rounded-full border-2 border-white items-center justify-center shadow-lg">
+                        <View className="w-3 h-3 bg-white rounded-full" />
+                    </View>
+                </Marker>
+            )}
+
+            {/* Bus Markers */}
             {markers.map((marker) => (
                 <Marker
                     key={marker.id}
@@ -86,11 +126,11 @@ const Map = ({ userLatitude: propUserLat, userLongitude: propUserLng }: MapProps
                     }}
                     title={marker.title}
                 >
-                    <View className="w-10 h-10 bg-white rounded-full border-2 border-orange-500 items-center justify-center shadow-lg">
+                    <View className="w-10 h-10 bg-white rounded-full border-2 border-cyan items-center justify-center shadow-lg">
                         <Image
                             source={require('../images/bus_loc.png')}
                             className="w-8 h-8"
-                            style={{ tintColor: '#EF6820' }}
+                            style={{ tintColor: '#06b6d4' }}
                         />
                     </View>
                 </Marker>

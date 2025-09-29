@@ -180,7 +180,7 @@ export default function SetAlertScreen() {
                             <Switch
                                 value={enableAlert}
                                 onValueChange={setEnableAlert}
-                                trackColor={{ false: '#374151', true: '#EF6820' }}
+                                trackColor={{ false: '#374151', true: 'rgba(6, 182 , 212 ,0.9)' }}
                                 thumbColor={enableAlert ? '#FFFFFF' : '#9CA3AF'}
                                 ios_backgroundColor="#374151"
                                 style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
@@ -197,7 +197,7 @@ export default function SetAlertScreen() {
                             <Switch
                                 value={receiveSMS}
                                 onValueChange={setReceiveSMS}
-                                trackColor={{ false: '#374151', true: '#EF6820' }}
+                                trackColor={{ false: '#374151', true: 'rgba(6, 182 , 212 ,0.9)' }}
                                 thumbColor={receiveSMS ? '#FFFFFF' : '#9CA3AF'}
                                 ios_backgroundColor="#374151"
                                 style={{ transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }] }}
@@ -210,8 +210,8 @@ export default function SetAlertScreen() {
             <View className="absolute bottom-0 left-0 right-0 bg-bg_gray px-4 pt-4 pb-8">
                 <TouchableOpacity
                     onPress={handleSetAlert}
-                    className="bg-accent rounded-xl py-4 items-center"
-                    style={{ backgroundColor: '#EF6820' }}
+                    className="bg-cyan rounded-xl py-4 items-center"
+                    style={{ backgroundColor: 'rgba(6, 182 , 212 ,0.9)' }}
                 >
                     <Text className="text-white font-bold text-lg">Set Alert</Text>
                 </TouchableOpacity>

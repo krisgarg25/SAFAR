@@ -131,7 +131,7 @@ const SignIn = () => {
                         <TouchableOpacity onPress={handleForgotPassword}>
                             <Text
                                 className="text-base font-medium"
-                                style={{ color: '#EF6820' }}
+                                style={{ color: '#06b6d4' }}
                             >
                                 Forgot Password?
                             </Text>
@@ -143,7 +143,9 @@ const SignIn = () => {
                         onPress={onSignInPress}
                         className="mb-6"
                         bgVariant={loading ? "secondary" : "primary"}
+
                     />
+
 
                     <OAuth />
 
@@ -155,7 +157,7 @@ const SignIn = () => {
                         <TouchableOpacity onPress={() => router.push("/(auth)/sign_up")}>
                             <Text
                                 className="text-base font-medium"
-                                style={{ color: '#EF6820' }}
+                                style={{ color: '#06b6d4' }}
                             >
                                 Sign Up
                             </Text>

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "bus_buddy",
+    "name": "SAFAR",
     "slug": "bus_buddy",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -33,7 +33,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true

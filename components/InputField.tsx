@@ -39,7 +39,7 @@ const InputField = ({
                     {label.toUpperCase()}
                 </Text>
                 <View className={`flex flex-row items-center justify-start relative bg-transparent
-            rounded-lg border pr-4 ${isFocused ? 'border-orange-500' : 'border-gray-500'} ${containerStyle}`}>
+            rounded-lg border pr-4 ${isFocused ? 'border-cyan' : 'border-gray-500'} ${containerStyle}`}>
                     <TextInput
                         className={`flex-1 p-4 text-[15px] text-white ${inputStyle}`}
                         secureTextEntry={secureTextEntry && !showPassword}
