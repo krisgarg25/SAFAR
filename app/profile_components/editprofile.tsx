@@ -17,10 +17,10 @@ import { Stack } from 'expo-router';
 
 const EditProfile = () => {
     const router = useRouter();
-    const [firstName, setFirstName] = useState('Gopal');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('gopalgarg@gmail.com');
-    const [phoneNumber, setPhoneNumber] = useState('99758-00666');
+    const [firstName, setFirstName] = useState('Ansh');
+    const [lastName, setLastName] = useState('Bhardwaj');
+    const [email, setEmail] = useState('anshrbhardwaj1@gmail.com');
+    const [phoneNumber, setPhoneNumber] = useState('+91 73411 33040');
 
     const handleGoBack = () => {
         router.back();
@@ -94,7 +94,7 @@ const EditProfile = () => {
                             </TouchableOpacity>
 
                             <Text className="text-white text-xl font-semibold mb-1">
-                                Gopal
+                                Ansh
                             </Text>
 
                             <TouchableOpacity activeOpacity={0.7}>

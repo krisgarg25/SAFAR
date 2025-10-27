@@ -2,52 +2,50 @@ import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, Image, Dimensio
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
-import { useRouter } from 'expo-router' // Add this import
+import { useRouter } from 'expo-router'
+import { useClerk } from '@clerk/clerk-expo'
 
 const { width, height } = Dimensions.get('window')
 
 const Profile = () => {
     const navigation = useNavigation()
-    const router = useRouter() // Add this hook
+    const router = useRouter()
+    const { signOut } = useClerk()
 
     const handleMenuItemPress = (screenName: string) => {
-        // Handle different navigation based on screen
         switch (screenName) {
             case 'Settings':
                 router.push('/profile_components/settings')
                 break
             case 'Notifications':
-                // Add your notification route
                 router.push('/profile_components/notifications')
                 break
             case 'Language':
-                // Add your language route
                 router.push('/profile_components/language')
                 break
             case 'HelpSupport':
-                // Add your help & support route
                 router.push('/profile_components/help-support')
                 break
             case 'About':
-                // Add your about route
                 router.push('/profile_components/about')
                 break
             default:
-                // Fallback to React Navigation if needed
                 navigation.navigate(screenName as never)
         }
     }
 
-    // Add this function to handle edit profile navigation
     const handleEditProfile = () => {
         router.push('/profile_components/editprofile')
     }
 
-    const handleLogout = () => {
-        // Add logout logic here
-        console.log('Logout pressed')
-        // You might want to navigate to login screen after logout
-        // router.replace('/auth/login')
+    const handleLogout = async () => {
+        try {
+            await signOut()
+            // Navigate to your auth entry screen
+            router.replace('/(auth)/welcome')
+        } catch (err) {
+            console.error('Sign out error:', err)
+        }
     }
 
     return (
@@ -80,7 +78,7 @@ const Profile = () => {
                     </TouchableOpacity>
                 </View>
 
-                <Text style={styles.userName}>Gopal </Text>
+                <Text style={styles.userName}>Ansh</Text>
                 <Text style={styles.userId}>user id: 247682</Text>
             </View>
 
@@ -179,7 +177,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: width * 0.05, // Responsive padding
+        paddingHorizontal: width * 0.05,
         paddingVertical: height * 0.02,
         borderBottomWidth: 1,
         borderBottomColor: '#4A5568',
@@ -191,7 +189,7 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     headerTitle: {
-        fontSize: width * 0.05, // Responsive font size
+        fontSize: width * 0.05,
         fontWeight: '600',
         color: 'white',
     },
@@ -208,7 +206,7 @@ const styles = StyleSheet.create({
         marginBottom: height * 0.025,
     },
     profileImage: {
-        width: width * 0.3, // Responsive image size
+        width: width * 0.3,
         height: width * 0.3,
         borderRadius: width * 0.15,
         backgroundColor: '#FFB6C1',
@@ -225,7 +223,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     userName: {
-        fontSize: width * 0.06, // Responsive font size
+        fontSize: width * 0.06,
         fontWeight: '600',
         color: 'white',
         marginBottom: 5,

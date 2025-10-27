@@ -1,15 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {View, Text, ScrollView, ActivityIndicator, Image, StyleSheet, Alert, Platform} from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, Image, StyleSheet, Alert, Platform, Share, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import { getBusById } from '@/utils/busData';
 import * as Location from 'expo-location';
-import * as Sharing from 'expo-sharing';
-import { Asset } from 'expo-asset';
-import * as FileSystem from "expo-file-system"
 
 // Fixed styles - REMOVED zIndex to prevent insert view error
 const markerStyles = StyleSheet.create({
@@ -93,46 +89,7 @@ const TrackBus = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
     const [locationPermission, setLocationPermission] = useState(false);
-    const [imageUri, setImageUri] = useState<string | null>(null);
     const mapRef = useRef<MapView>(null);
-
-    // Load Asset for sharing - based on extracted code
-    useEffect(() => {
-        const loadAsset = async () => {
-            try {
-                // You can replace this with any image from your assets folder
-                // For example: require('../../assets/bus_location_share.jpg')
-                const asset = Asset.fromModule(require('../../images/liveshare image.jpg'));
-                await asset.downloadAsync();
-                setImageUri(asset.localUri || null);
-            } catch (error) {
-                console.error('Error loading asset:', error);
-            }
-        };
-
-        loadAsset();
-    }, []);
-
-    // Share image function - based on extracted code
-    const shareImage = async () => {
-        try {
-            if (imageUri) {
-                await Sharing.shareAsync(imageUri);
-            } else {
-                console.log("image uri is not set");
-                Alert.alert(
-                    'Share Error',
-                    'Image not loaded yet. Please try again in a moment.'
-                );
-            }
-        } catch (error) {
-            console.error("oops, failed to share image", error);
-            Alert.alert(
-                'Share Error',
-                'Failed to share location image. Please try again.'
-            );
-        }
-    };
 
     // Request location permission and get user location
     const requestLocationPermission = async () => {
@@ -185,15 +142,44 @@ const TrackBus = () => {
         }
     };
 
+    // Share current coordinates via native share sheet
+    const shareLocation = async () => {
+        try {
+            const coords = userLocation;
+            if (coords && typeof coords.latitude === 'number' && typeof coords.longitude === 'number') {
+                const { latitude, longitude } = coords;
+                const googleUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+                const appleUrl = `https://maps.apple.com/?ll=${latitude},${longitude}`;
+                const link = Platform.OS === 'ios' ? appleUrl : googleUrl;
+
+                // Link-only share (no extra text)
+                await Share.share({
+                    title: 'Live Bus Location',
+                    message: link,   // Android reads the URL from message
+                    url: link,       // iOS uses url for previews
+                });
+            } else {
+                Alert.alert('Share Error', 'Location not available yet. Please try again in a moment.');
+            }
+        } catch (error) {
+            console.error('oops, failed to share location', error);
+            Alert.alert('Share Error', 'Failed to share location. Please try again.');
+        }
+    };
+
+
     // Reload map function
     const reloadMap = () => {
         if (mapRef.current && busData) {
-            mapRef.current.animateToRegion({
-                latitude: busData.latitude,
-                longitude: busData.longitude,
-                latitudeDelta: 0.5,
-                longitudeDelta: 0.5,
-            }, 1000);
+            mapRef.current.animateToRegion(
+                {
+                    latitude: busData.latitude,
+                    longitude: busData.longitude,
+                    latitudeDelta: 0.5,
+                    longitudeDelta: 0.5,
+                },
+                1000
+            );
 
             const stops = getRouteStops();
             setRouteStops(stops);
@@ -205,9 +191,9 @@ const TrackBus = () => {
         }
     };
 
-    // Updated handleShareLocation to use the shareImage function
+    // Share handler
     const handleShareLocation = () => {
-        shareImage();
+        shareLocation();
     };
 
     useEffect(() => {
@@ -252,10 +238,7 @@ const TrackBus = () => {
             <SafeAreaView className="flex-1 bg-bg_gray">
                 <View className="flex-1 justify-center items-center">
                     <Text className="text-white text-lg">Bus not found</Text>
-                    <TouchableOpacity
-                        onPress={() => router.back()}
-                        className="mt-4 bg-orange-500 px-4 py-2 rounded-lg"
-                    >
+                    <TouchableOpacity onPress={() => router.back()} className="mt-4 bg-orange-500 px-4 py-2 rounded-lg">
                         <Text className="text-white font-semibold">Go Back</Text>
                     </TouchableOpacity>
                 </View>
@@ -264,17 +247,17 @@ const TrackBus = () => {
     }
 
     // Split route for different colored lines
-    const completedStops = routeStops.filter(stop => stop.completed);
+    const completedStops = routeStops.filter((stop) => stop.completed);
     const allStops = routeStops;
 
-    const completedCoordinates = completedStops.map(stop => ({
+    const completedCoordinates = completedStops.map((stop) => ({
         latitude: stop.latitude,
-        longitude: stop.longitude
+        longitude: stop.longitude,
     }));
 
-    const allCoordinates = allStops.map(stop => ({
+    const allCoordinates = allStops.map((stop) => ({
         latitude: stop.latitude,
-        longitude: stop.longitude
+        longitude: stop.longitude,
     }));
 
     return (
@@ -282,12 +265,7 @@ const TrackBus = () => {
             {/* Header with Centered Title */}
             <View className="flex-row items-center px-4 py-3 border-b border-cyan_4bor" style={{ position: 'relative' }}>
                 {/* Back Button - Absolute Left */}
-                <TouchableOpacity
-                    onPress={() => router.back()}
-                    className="justify-center items-center"
-                    activeOpacity={0.7}
-                    style={{ position: 'absolute', left: 16, zIndex: 1 }}
-                >
+                <TouchableOpacity onPress={() => router.back()} className="justify-center items-center" activeOpacity={0.7} style={{ position: 'absolute', left: 16, zIndex: 1 }}>
                     <Image source={require('../../images/back.png')} className="h-10 w-10" />
                 </TouchableOpacity>
 
@@ -319,9 +297,7 @@ const TrackBus = () => {
             </View>
 
             {/* Smooth Map Container */}
-            <View
-                className="flex-1 rounded-bl-[20px] rounded-br-[20px]  rounded-tl-[20px]  rounded-tr-[20px] overflow-hidden mb-[10px] border-2 border-cyan"
-                style={{ height: '65%' }}>
+            <View className="flex-1 rounded-bl-[20px] rounded-br-[20px]  rounded-tl-[20px]  rounded-tr-[20px] overflow-hidden mb-[10px] border-2 border-cyan" style={{ height: '65%' }}>
                 <MapView
                     ref={mapRef}
                     provider={PROVIDER_GOOGLE}
@@ -337,12 +313,7 @@ const TrackBus = () => {
                 >
                     {/* User Location Marker - Custom Blue Marker */}
                     {userLocation && (
-                        <Marker
-                            coordinate={userLocation}
-                            title="Your Location"
-                            description="You are here"
-                            anchor={{ x: 0.5, y: 0.5 }}
-                        >
+                        <Marker coordinate={userLocation} title="Your Location" description="You are here" anchor={{ x: 0.5, y: 0.5 }}>
                             <View className="items-center justify-center">
                                 {/* Outer ring */}
                                 <View className="w-12 h-12 bg-blue-400 rounded-full opacity-20 absolute" />
@@ -356,19 +327,10 @@ const TrackBus = () => {
 
                     {/* Route Stops - Render first (lower layer) */}
                     {routeStops.map((stop, index) => (
-                        <Marker
-                            key={`stop-${index}`}
-                            coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
-                            anchor={{ x: 0.6, y: 0.6 }}
-                            title={stop.name}
-                            description="Bus Stop"
-                        >
+                        <Marker key={`stop-${index}`} coordinate={{ latitude: stop.latitude, longitude: stop.longitude }} anchor={{ x: 0.6, y: 0.6 }} title={stop.name} description="Bus Stop">
                             <View style={stop.completed ? markerStyles.stopMarkerCompleted : markerStyles.stopMarkerIncomplete}>
                                 <Image
-                                    source={stop.completed
-                                        ? require('../../images/reach_stop.png')
-                                        : require('../../images/not_reach_stop.png')
-                                    }
+                                    source={stop.completed ? require('../../images/reach_stop.png') : require('../../images/not_reach_stop.png')}
                                     className="h-7 w-7"
                                 />
                             </View>
@@ -380,38 +342,29 @@ const TrackBus = () => {
                         key="bus-marker"
                         coordinate={{
                             latitude: busData.latitude,
-                            longitude: busData.longitude
+                            longitude: busData.longitude,
                         }}
                         title={`Bus ${busData.busNumber}`}
                         description="Live Bus Location"
                         anchor={{ x: 0.5, y: 1.2 }}
                     >
-                        <View className="w-[35px] h-[35px] justify-center items-center bg-white rounded-[25px] border-2 border-[#06b6d4]"
-                              style={{
-                                  shadowColor: '#06b6d4',
-                                  shadowOffset: { width: 0, height: 2 },
-                                  shadowOpacity: 0.8,
-                                  shadowRadius: 4,
-                                  elevation: 8,
-                              }}>
-                            <Image source={require('../../images/bus_loc.png')} className="h-7 w-7"  />
+                        <View
+                            className="w-[35px] h-[35px] justify-center items-center bg-white rounded-[25px] border-2 border-[#06b6d4]"
+                            style={{
+                                shadowColor: '#06b6d4',
+                                shadowOffset: { width: 0, height: 2 },
+                                shadowOpacity: 0.8,
+                                shadowRadius: 4,
+                                elevation: 8,
+                            }}
+                        >
+                            <Image source={require('../../images/bus_loc.png')} className="h-7 w-7" />
                         </View>
                     </Marker>
 
                     {/* Route Lines */}
-                    {completedCoordinates.length > 1 && (
-                        <Polyline
-                            coordinates={completedCoordinates}
-                            strokeColor="#10B981"
-                            strokeWidth={6}
-                        />
-                    )}
-                    <Polyline
-                        coordinates={allCoordinates}
-                        strokeColor="#6B7280"
-                        strokeWidth={4}
-                        lineDashPattern={[8, 4]}
-                    />
+                    {completedCoordinates.length > 1 && <Polyline coordinates={completedCoordinates} strokeColor="#10B981" strokeWidth={6} />}
+                    <Polyline coordinates={allCoordinates} strokeColor="#6B7280" strokeWidth={4} lineDashPattern={[8, 4]} />
                 </MapView>
 
                 {/* Fixed Floating Action Button with Reload Functionality */}
@@ -437,17 +390,20 @@ const TrackBus = () => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         paddingBottom: 30,
-                        paddingTop: 5
+                        paddingTop: 5,
                     }}
                 >
                     {/* Bus Info Card with smooth styling */}
-                    <View className="bg-bg_gray mx-4 mb-3 rounded-2xl p-4 border border-cyan_4bor" style={{
-                        shadowColor: 'rgba(6, 182 , 212 ,0.5)',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.1,
-                        shadowRadius: 8,
-                        elevation: 3,
-                    }}>
+                    <View
+                        className="bg-bg_gray mx-4 mb-3 rounded-2xl p-4 border border-cyan_4bor"
+                        style={{
+                            shadowColor: 'rgba(6, 182 , 212 ,0.5)',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.1,
+                            shadowRadius: 8,
+                            elevation: 3,
+                        }}
+                    >
                         <View className="flex-row items-center justify-between mb-3">
                             <View className="flex-1">
                                 <Text className="text-white font-bold text-lg">{busData.routeName}</Text>
@@ -476,25 +432,15 @@ const TrackBus = () => {
                     {/* Route Progress */}
                     <View className="px-4 mb-4">
                         <Text className="text-white font-bold text-lg mb-4">Route Progress</Text>
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ paddingHorizontal: 8 }}
-                        >
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 8 }}>
                             <View className="flex-row items-center">
                                 {routeStops.map((stop, index) => (
                                     <React.Fragment key={index}>
-                                        <TouchableOpacity
-                                            className="items-center"
-                                            activeOpacity={0.8}
-                                            style={{ minWidth: 80 }}
-                                        >
+                                        <TouchableOpacity className="items-center" activeOpacity={0.8} style={{ minWidth: 80 }}>
                                             {/* Smaller Circular Progress Indicator */}
                                             <View
                                                 className={`w-6 h-6 rounded-full border-2 items-center justify-center mb-2 ${
-                                                    stop.completed
-                                                        ? 'bg-cyan_4txt border-cyan_4bor'
-                                                        : 'bg-gray-700 border-gray-600'
+                                                    stop.completed ? 'bg-cyan_4txt border-cyan_4bor' : 'bg-gray-700 border-gray-600'
                                                 }`}
                                                 style={{
                                                     shadowColor: stop.completed ? '#10B981' : 'transparent',
@@ -504,18 +450,12 @@ const TrackBus = () => {
                                                     elevation: stop.completed ? 3 : 0,
                                                 }}
                                             >
-                                                <Ionicons
-                                                    name={stop.completed ? "checkmark" : "radio-button-off"}
-                                                    size={14}
-                                                    color={stop.completed ? "white" : "#9CA3AF"}
-                                                />
+                                                <Ionicons name={stop.completed ? 'checkmark' : 'radio-button-off'} size={14} color={stop.completed ? 'white' : '#9CA3AF'} />
                                             </View>
 
                                             {/* Stop Name */}
                                             <Text
-                                                className={`text-xs font-medium text-center ${
-                                                    stop.completed ? 'text-white' : 'text-gray-400'
-                                                }`}
+                                                className={`text-xs font-medium text-center ${stop.completed ? 'text-white' : 'text-gray-400'}`}
                                                 numberOfLines={2}
                                                 style={{ maxWidth: 70 }}
                                             >
@@ -526,11 +466,7 @@ const TrackBus = () => {
                                         {/* Properly Connected Line */}
                                         {index < routeStops.length - 1 && (
                                             <View
-                                                className={`h-0.5 ${
-                                                    stop.completed
-                                                        ? 'bg-cyan'
-                                                        : 'bg-gray-600'
-                                                }`}
+                                                className={`h-0.5 ${stop.completed ? 'bg-cyan' : 'bg-gray-600'}`}
                                                 style={{
                                                     width: 40,
                                                     marginTop: -22, // Align with circle center
@@ -544,22 +480,24 @@ const TrackBus = () => {
                         </ScrollView>
                     </View>
 
-
                     {/* Next Stop Info */}
-                    <View className="bg-bg_gray mx-4 rounded-xl p-4 border border-cyan_4bor" style={{
-                        shadowColor: 'rgba(6, 182 , 212 ,1)',
-                        shadowOffset: { width: 0, height: 2 },
-                        shadowOpacity: 0.1,
-                        shadowRadius: 4,
-                        elevation: 2,
-                    }}>
+                    <View
+                        className="bg-bg_gray mx-4 rounded-xl p-4 border border-cyan_4bor"
+                        style={{
+                            shadowColor: 'rgba(6, 182 , 212 ,1)',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.1,
+                            shadowRadius: 4,
+                            elevation: 2,
+                        }}
+                    >
                         <View className="flex-row items-center">
-                            <Image source={require('@/images/route.png')} className="w-8 h-8"/>
+                            <Image source={require('@/images/route.png')} className="w-8 h-8" />
 
                             <View className="ml-3 flex-1">
                                 <Text className="text-cyan font-bold text-base">Next Stop</Text>
                                 <Text className="text-white text-base font-medium mt-1">
-                                    {routeStops.find(stop => !stop.completed)?.name || 'Final Destination'}
+                                    {routeStops.find((stop) => !stop.completed)?.name || 'Final Destination'}
                                 </Text>
                             </View>
                         </View>
