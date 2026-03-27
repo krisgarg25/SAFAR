@@ -1,6 +1,8 @@
 # Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app
+
+[![Portfolio](https://img.shields.io/badge/krisgarg.in-Portfolio-0A0A0A?style=for-the-badge&logo=google-chrome&logoColor=white)](https://krisgarg.in)
 
 ## Get started
 
